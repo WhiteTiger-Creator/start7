@@ -1,0 +1,24 @@
+{
+  "default": {
+    "admission_min": 240,
+    "escalate_total_cents": 1870000,
+    "escalate_score_min": 780,
+    "escalate_ratchet_min": 540,
+    "review_score_min": 430,
+    "review_bracket_min": 5,
+    "minimum_bill_cents": 1800,
+    "ratchet_percent": 80,
+    "levy_bps": 240,
+    "review_segment_min": 27
+  },
+  "class_overrides": {
+    "commercial": {
+      "levy_bps": 310
+    },
+    "industrial": {
+      "minimum_bill_cents": 42000,
+      "escalate_ratchet_min": 5,
+      "review_segment_min": 25
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "tariff_id": "TB-2026",
+  "effective_from": "2026-01-01",
+  "classes": {
+    "commercial": {
+      "brackets": [
+        {"bracket_id": "COM-A", "upper_kwh": 500, "rate_per_kwh_cents": 16},
+        {"bracket_id": "COM-B", "upper_kwh": 2000, "rate_per_kwh_cents": 22},
+        {"bracket_id": "COM-C", "upper_kwh": null, "rate_per_kwh_cents": 29}
+      ],
+      "demand_rate_cents_per_kw": 780,
+      "standing_charge_cents_per_day": 96
+    },
+    "industrial": {
+      "brackets": [
+        {"bracket_id": "IND-A", "upper_kwh": 5000, "rate_per_kwh_cents": 11},
+        {"bracket_id": "IND-B", "upper_kwh": null, "rate_per_kwh_cents": 15}
+      ],
+      "demand_rate_cents_per_kw": 1240,
+      "standing_charge_cents_per_day": 310
+    },
+    "residential": {
+      "brackets": [
+        {"bracket_id": "RES-A", "upper_kwh": 300, "rate_per_kwh_cents": 14},
+        {"bracket_id": "RES-B", "upper_kwh": 800, "rate_per_kwh_cents": 19},
+        {"bracket_id": "RES-C", "upper_kwh": null, "rate_per_kwh_cents": 26}
+      ],
+      "demand_rate_cents_per_kw": 0,
+      "standing_charge_cents_per_day": 41
+    }
+  }
+}

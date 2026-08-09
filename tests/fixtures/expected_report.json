@@ -1,0 +1,2158 @@
+{
+  "alternate": {
+    "queue_rows": [
+      {
+        "account": "ac-3350",
+        "bill_id": "ac-3350:A-2003:2026-04-20",
+        "billed_days": 30,
+        "billed_demand_kw": 190,
+        "billed_subtotal_cents": 397563,
+        "bracket_ids": [
+          "IND-A",
+          "IND-B"
+        ],
+        "bracket_span": 2,
+        "consumption_kwh": 7500,
+        "demand_charge_cents": 283099,
+        "energy_charge_cents": 105164,
+        "estimated": false,
+        "exception_score": 163,
+        "levy_cents": 9541,
+        "minimum_applied": false,
+        "peak_demand_kw": 190,
+        "period_end": "2026-05-19",
+        "period_start": "2026-04-20",
+        "ratchet_floor_kw": 0,
+        "ratchet_uplift_kw": 0,
+        "read_id": "A-2003",
+        "schedule_versions_applied": [
+          "2026-04-01",
+          "2026-05-01"
+        ],
+        "segment_consumption_kwh": [
+          2750,
+          4750
+        ],
+        "segment_count": 2,
+        "segment_days": [
+          11,
+          19
+        ],
+        "service_class": "industrial",
+        "standing_charge_cents": 9300,
+        "subtotal_cents": 397563,
+        "tier": "escalate",
+        "total_due_cents": 407104
+      },
+      {
+        "account": "ac-3350",
+        "bill_id": "ac-3350:A-2008:2026-05-20",
+        "billed_days": 30,
+        "billed_demand_kw": 152,
+        "billed_subtotal_cents": 313780,
+        "bracket_ids": [
+          "IND-B"
+        ],
+        "bracket_span": 1,
+        "consumption_kwh": 5200,
+        "demand_charge_cents": 226480,
+        "energy_charge_cents": 78000,
+        "estimated": true,
+        "exception_score": 133,
+        "levy_cents": 7530,
+        "minimum_applied": false,
+        "peak_demand_kw": 121,
+        "period_end": "2026-06-18",
+        "period_start": "2026-05-20",
+        "ratchet_floor_kw": 152,
+        "ratchet_uplift_kw": 31,
+        "read_id": "A-2008",
+        "schedule_versions_applied": [
+          "2026-05-01"
+        ],
+        "segment_consumption_kwh": [
+          5200
+        ],
+        "segment_count": 1,
+        "segment_days": [
+          30
+        ],
+        "service_class": "industrial",
+        "standing_charge_cents": 9300,
+        "subtotal_cents": 313780,
+        "tier": "escalate",
+        "total_due_cents": 321310
+      },
+      {
+        "account": "ac-9024",
+        "bill_id": "ac-9024:A-2001:2026-02-20",
+        "billed_days": 30,
+        "billed_demand_kw": 44,
+        "billed_subtotal_cents": 102950,
+        "bracket_ids": [
+          "COM-A",
+          "COM-B",
+          "COM-C"
+        ],
+        "bracket_span": 3,
+        "consumption_kwh": 2600,
+        "demand_charge_cents": 34320,
+        "energy_charge_cents": 65750,
+        "estimated": false,
+        "exception_score": 44,
+        "levy_cents": 3191,
+        "minimum_applied": false,
+        "peak_demand_kw": 44,
+        "period_end": "2026-03-21",
+        "period_start": "2026-02-20",
+        "ratchet_floor_kw": 0,
+        "ratchet_uplift_kw": 0,
+        "read_id": "A-2001",
+        "schedule_versions_applied": [
+          "2026-01-01",
+          "2026-03-01"
+        ],
+        "segment_consumption_kwh": [
+          780,
+          1820
+        ],
+        "segment_count": 2,
+        "segment_days": [
+          9,
+          21
+        ],
+        "service_class": "commercial",
+        "standing_charge_cents": 2880,
+        "subtotal_cents": 102950,
+        "tier": "review",
+        "total_due_cents": 106141
+      },
+      {
+        "account": "ac-7781",
+        "bill_id": "ac-7781:A-2006:2026-04-01",
+        "billed_days": 30,
+        "billed_demand_kw": 30,
+        "billed_subtotal_cents": 75054,
+        "bracket_ids": [
+          "COM-A",
+          "COM-B",
+          "COM-C",
+          "IND-A"
+        ],
+        "bracket_span": 4,
+        "consumption_kwh": 2100,
+        "demand_charge_cents": 38310,
+        "energy_charge_cents": 29370,
+        "estimated": false,
+        "exception_score": 33,
+        "levy_cents": 1801,
+        "minimum_applied": false,
+        "peak_demand_kw": 30,
+        "period_end": "2026-04-30",
+        "period_start": "2026-04-01",
+        "ratchet_floor_kw": 0,
+        "ratchet_uplift_kw": 0,
+        "read_id": "A-2006",
+        "schedule_versions_applied": [
+          "2026-04-01"
+        ],
+        "segment_consumption_kwh": [
+          630,
+          1470
+        ],
+        "segment_count": 2,
+        "segment_days": [
+          9,
+          21
+        ],
+        "service_class": "industrial",
+        "standing_charge_cents": 7374,
+        "subtotal_cents": 75054,
+        "tier": "review",
+        "total_due_cents": 76855
+      },
+      {
+        "account": "ac-9024",
+        "bill_id": "ac-9024:A-2002:2026-03-22",
+        "billed_days": 30,
+        "billed_demand_kw": 36,
+        "billed_subtotal_cents": 48419,
+        "bracket_ids": [
+          "COM-A",
+          "COM-B",
+          "COM-C"
+        ],
+        "bracket_span": 3,
+        "consumption_kwh": 900,
+        "demand_charge_cents": 28080,
+        "energy_charge_cents": 17459,
+        "estimated": false,
+        "exception_score": 25,
+        "levy_cents": 1500,
+        "minimum_applied": false,
+        "peak_demand_kw": 12,
+        "period_end": "2026-04-20",
+        "period_start": "2026-03-22",
+        "ratchet_floor_kw": 36,
+        "ratchet_uplift_kw": 24,
+        "read_id": "A-2002",
+        "schedule_versions_applied": [
+          "2026-03-01",
+          "2026-04-01"
+        ],
+        "segment_consumption_kwh": [
+          300,
+          600
+        ],
+        "segment_count": 2,
+        "segment_days": [
+          10,
+          20
+        ],
+        "service_class": "commercial",
+        "standing_charge_cents": 2880,
+        "subtotal_cents": 48419,
+        "tier": "review",
+        "total_due_cents": 49919
+      },
+      {
+        "account": "ac-4412",
+        "bill_id": "ac-4412:A-2004:2026-05-02",
+        "billed_days": 30,
+        "billed_demand_kw": 0,
+        "billed_subtotal_cents": 32510,
+        "bracket_ids": [
+          "RES-A",
+          "RES-B",
+          "RES-D"
+        ],
+        "bracket_span": 3,
+        "consumption_kwh": 1500,
+        "demand_charge_cents": 0,
+        "energy_charge_cents": 31280,
+        "estimated": false,
+        "exception_score": 15,
+        "levy_cents": 780,
+        "minimum_applied": false,
+        "peak_demand_kw": 0,
+        "period_end": "2026-05-31",
+        "period_start": "2026-05-02",
+        "ratchet_floor_kw": 0,
+        "ratchet_uplift_kw": 0,
+        "read_id": "A-2004",
+        "schedule_versions_applied": [
+          "2026-05-01"
+        ],
+        "segment_consumption_kwh": [
+          1500
+        ],
+        "segment_count": 1,
+        "segment_days": [
+          30
+        ],
+        "service_class": "residential",
+        "standing_charge_cents": 1230,
+        "subtotal_cents": 32510,
+        "tier": "review",
+        "total_due_cents": 33290
+      },
+      {
+        "account": "ac-8801",
+        "bill_id": "ac-8801:A-2005:2026-01-10",
+        "billed_days": 30,
+        "billed_demand_kw": 0,
+        "billed_subtotal_cents": 1800,
+        "bracket_ids": [
+          "RES-A"
+        ],
+        "bracket_span": 1,
+        "consumption_kwh": 12,
+        "demand_charge_cents": 0,
+        "energy_charge_cents": 168,
+        "estimated": false,
+        "exception_score": 0,
+        "levy_cents": 43,
+        "minimum_applied": true,
+        "peak_demand_kw": 0,
+        "period_end": "2026-02-08",
+        "period_start": "2026-01-10",
+        "ratchet_floor_kw": 0,
+        "ratchet_uplift_kw": 0,
+        "read_id": "A-2005",
+        "schedule_versions_applied": [
+          "2026-01-01"
+        ],
+        "segment_consumption_kwh": [
+          12
+        ],
+        "segment_count": 1,
+        "segment_days": [
+          30
+        ],
+        "service_class": "residential",
+        "standing_charge_cents": 1230,
+        "subtotal_cents": 1398,
+        "tier": "review",
+        "total_due_cents": 1843
+      }
+    ],
+    "register": {
+      "ac-3350": [
+        {
+          "billed_days": 30,
+          "billed_demand_kw": 190,
+          "billed_subtotal_cents": 397563,
+          "bracket_ids": [
+            "IND-A",
+            "IND-B"
+          ],
+          "bracket_span": 2,
+          "consumption_kwh": 7500,
+          "demand_charge_cents": 283099,
+          "energy_charge_cents": 105164,
+          "estimated": false,
+          "exception_score": 163,
+          "levy_cents": 9541,
+          "minimum_applied": false,
+          "peak_demand_kw": 190,
+          "period_end": "2026-05-19",
+          "period_start": "2026-04-20",
+          "ratchet_floor_kw": 0,
+          "ratchet_uplift_kw": 0,
+          "read_id": "A-2003",
+          "schedule_versions_applied": [
+            "2026-04-01",
+            "2026-05-01"
+          ],
+          "segment_consumption_kwh": [
+            2750,
+            4750
+          ],
+          "segment_count": 2,
+          "segment_days": [
+            11,
+            19
+          ],
+          "service_class": "industrial",
+          "standing_charge_cents": 9300,
+          "subtotal_cents": 397563,
+          "total_due_cents": 407104
+        },
+        {
+          "billed_days": 30,
+          "billed_demand_kw": 152,
+          "billed_subtotal_cents": 313780,
+          "bracket_ids": [
+            "IND-B"
+          ],
+          "bracket_span": 1,
+          "consumption_kwh": 5200,
+          "demand_charge_cents": 226480,
+          "energy_charge_cents": 78000,
+          "estimated": true,
+          "exception_score": 133,
+          "levy_cents": 7530,
+          "minimum_applied": false,
+          "peak_demand_kw": 121,
+          "period_end": "2026-06-18",
+          "period_start": "2026-05-20",
+          "ratchet_floor_kw": 152,
+          "ratchet_uplift_kw": 31,
+          "read_id": "A-2008",
+          "schedule_versions_applied": [
+            "2026-05-01"
+          ],
+          "segment_consumption_kwh": [
+            5200
+          ],
+          "segment_count": 1,
+          "segment_days": [
+            30
+          ],
+          "service_class": "industrial",
+          "standing_charge_cents": 9300,
+          "subtotal_cents": 313780,
+          "total_due_cents": 321310
+        }
+      ],
+      "ac-4412": [
+        {
+          "billed_days": 30,
+          "billed_demand_kw": 0,
+          "billed_subtotal_cents": 32510,
+          "bracket_ids": [
+            "RES-A",
+            "RES-B",
+            "RES-D"
+          ],
+          "bracket_span": 3,
+          "consumption_kwh": 1500,
+          "demand_charge_cents": 0,
+          "energy_charge_cents": 31280,
+          "estimated": false,
+          "exception_score": 15,
+          "levy_cents": 780,
+          "minimum_applied": false,
+          "peak_demand_kw": 0,
+          "period_end": "2026-05-31",
+          "period_start": "2026-05-02",
+          "ratchet_floor_kw": 0,
+          "ratchet_uplift_kw": 0,
+          "read_id": "A-2004",
+          "schedule_versions_applied": [
+            "2026-05-01"
+          ],
+          "segment_consumption_kwh": [
+            1500
+          ],
+          "segment_count": 1,
+          "segment_days": [
+            30
+          ],
+          "service_class": "residential",
+          "standing_charge_cents": 1230,
+          "subtotal_cents": 32510,
+          "total_due_cents": 33290
+        }
+      ],
+      "ac-7781": [
+        {
+          "billed_days": 30,
+          "billed_demand_kw": 30,
+          "billed_subtotal_cents": 75054,
+          "bracket_ids": [
+            "COM-A",
+            "COM-B",
+            "COM-C",
+            "IND-A"
+          ],
+          "bracket_span": 4,
+          "consumption_kwh": 2100,
+          "demand_charge_cents": 38310,
+          "energy_charge_cents": 29370,
+          "estimated": false,
+          "exception_score": 33,
+          "levy_cents": 1801,
+          "minimum_applied": false,
+          "peak_demand_kw": 30,
+          "period_end": "2026-04-30",
+          "period_start": "2026-04-01",
+          "ratchet_floor_kw": 0,
+          "ratchet_uplift_kw": 0,
+          "read_id": "A-2006",
+          "schedule_versions_applied": [
+            "2026-04-01"
+          ],
+          "segment_consumption_kwh": [
+            630,
+            1470
+          ],
+          "segment_count": 2,
+          "segment_days": [
+            9,
+            21
+          ],
+          "service_class": "industrial",
+          "standing_charge_cents": 7374,
+          "subtotal_cents": 75054,
+          "total_due_cents": 76855
+        }
+      ],
+      "ac-8801": [
+        {
+          "billed_days": 30,
+          "billed_demand_kw": 0,
+          "billed_subtotal_cents": 1800,
+          "bracket_ids": [
+            "RES-A"
+          ],
+          "bracket_span": 1,
+          "consumption_kwh": 12,
+          "demand_charge_cents": 0,
+          "energy_charge_cents": 168,
+          "estimated": false,
+          "exception_score": 0,
+          "levy_cents": 43,
+          "minimum_applied": true,
+          "peak_demand_kw": 0,
+          "period_end": "2026-02-08",
+          "period_start": "2026-01-10",
+          "ratchet_floor_kw": 0,
+          "ratchet_uplift_kw": 0,
+          "read_id": "A-2005",
+          "schedule_versions_applied": [
+            "2026-01-01"
+          ],
+          "segment_consumption_kwh": [
+            12
+          ],
+          "segment_count": 1,
+          "segment_days": [
+            30
+          ],
+          "service_class": "residential",
+          "standing_charge_cents": 1230,
+          "subtotal_cents": 1398,
+          "total_due_cents": 1843
+        },
+        {
+          "billed_days": 30,
+          "billed_demand_kw": 0,
+          "billed_subtotal_cents": 6640,
+          "bracket_ids": [
+            "RES-A",
+            "RES-B"
+          ],
+          "bracket_span": 2,
+          "consumption_kwh": 350,
+          "demand_charge_cents": 0,
+          "energy_charge_cents": 5410,
+          "estimated": false,
+          "exception_score": 3,
+          "levy_cents": 159,
+          "minimum_applied": false,
+          "peak_demand_kw": 0,
+          "period_end": "2026-03-10",
+          "period_start": "2026-02-09",
+          "ratchet_floor_kw": 0,
+          "ratchet_uplift_kw": 0,
+          "read_id": "A-2007",
+          "schedule_versions_applied": [
+            "2026-01-01",
+            "2026-03-01"
+          ],
+          "segment_consumption_kwh": [
+            233,
+            117
+          ],
+          "segment_count": 2,
+          "segment_days": [
+            20,
+            10
+          ],
+          "service_class": "residential",
+          "standing_charge_cents": 1230,
+          "subtotal_cents": 6640,
+          "total_due_cents": 6799
+        }
+      ],
+      "ac-9024": [
+        {
+          "billed_days": 30,
+          "billed_demand_kw": 44,
+          "billed_subtotal_cents": 102950,
+          "bracket_ids": [
+            "COM-A",
+            "COM-B",
+            "COM-C"
+          ],
+          "bracket_span": 3,
+          "consumption_kwh": 2600,
+          "demand_charge_cents": 34320,
+          "energy_charge_cents": 65750,
+          "estimated": false,
+          "exception_score": 44,
+          "levy_cents": 3191,
+          "minimum_applied": false,
+          "peak_demand_kw": 44,
+          "period_end": "2026-03-21",
+          "period_start": "2026-02-20",
+          "ratchet_floor_kw": 0,
+          "ratchet_uplift_kw": 0,
+          "read_id": "A-2001",
+          "schedule_versions_applied": [
+            "2026-01-01",
+            "2026-03-01"
+          ],
+          "segment_consumption_kwh": [
+            780,
+            1820
+          ],
+          "segment_count": 2,
+          "segment_days": [
+            9,
+            21
+          ],
+          "service_class": "commercial",
+          "standing_charge_cents": 2880,
+          "subtotal_cents": 102950,
+          "total_due_cents": 106141
+        },
+        {
+          "billed_days": 30,
+          "billed_demand_kw": 36,
+          "billed_subtotal_cents": 48419,
+          "bracket_ids": [
+            "COM-A",
+            "COM-B",
+            "COM-C"
+          ],
+          "bracket_span": 3,
+          "consumption_kwh": 900,
+          "demand_charge_cents": 28080,
+          "energy_charge_cents": 17459,
+          "estimated": false,
+          "exception_score": 25,
+          "levy_cents": 1500,
+          "minimum_applied": false,
+          "peak_demand_kw": 12,
+          "period_end": "2026-04-20",
+          "period_start": "2026-03-22",
+          "ratchet_floor_kw": 36,
+          "ratchet_uplift_kw": 24,
+          "read_id": "A-2002",
+          "schedule_versions_applied": [
+            "2026-03-01",
+            "2026-04-01"
+          ],
+          "segment_consumption_kwh": [
+            300,
+            600
+          ],
+          "segment_count": 2,
+          "segment_days": [
+            10,
+            20
+          ],
+          "service_class": "commercial",
+          "standing_charge_cents": 2880,
+          "subtotal_cents": 48419,
+          "total_due_cents": 49919
+        }
+      ]
+    },
+    "summary": {
+      "account_count": 5,
+      "bill_count": 8,
+      "canonical_read_count": 8,
+      "dropped_read_count": 1,
+      "estimated_bill_count": 1,
+      "largest_bill_cents": 407104,
+      "max_exception_score": 163,
+      "max_ratchet_uplift_kw": 31,
+      "max_total_due_cents": 407104,
+      "minimum_applied_count": 1,
+      "queued_bill_count": 7,
+      "raw_read_count": 10,
+      "schedule_version_count": 4,
+      "schema_version": "tariff-bill-v1",
+      "tier_counts": {
+        "escalate": 2,
+        "review": 5,
+        "watch": 0
+      },
+      "total_demand_charge_cents": 610289,
+      "total_due_cents": 1003261,
+      "total_energy_charge_cents": 332601,
+      "total_levy_cents": 24545,
+      "total_standing_charge_cents": 35424,
+      "unique_read_ids": 9
+    }
+  },
+  "amendment_filings": [
+    {
+      "bracket": {
+        "bracket_id": "RES-A",
+        "rate_per_kwh_cents": 15,
+        "upper_kwh": 260
+      },
+      "docket": "DK-114",
+      "effective_date": "2026-03-01",
+      "filed_on": "2026-01-20",
+      "filing_id": "PUC-2026-0131",
+      "operation": "replace-bracket",
+      "rationale": "first-block realignment tabled by the ratepayer advocate",
+      "service_class": "residential",
+      "status": "approved"
+    },
+    {
+      "bracket": {
+        "bracket_id": "RES-A",
+        "rate_per_kwh_cents": 16,
+        "upper_kwh": 240
+      },
+      "docket": "DK-114",
+      "effective_date": "2026-03-01",
+      "filed_on": "2026-02-02",
+      "filing_id": "PUC-2026-0118",
+      "operation": "replace-bracket",
+      "rationale": "settlement position replacing the tabled first-block realignment",
+      "service_class": "residential",
+      "status": "approved"
+    },
+    {
+      "bracket_id": "COM-B",
+      "docket": "DK-117",
+      "effective_date": "2026-03-01",
+      "filed_on": "2026-02-11",
+      "filing_id": "PUC-2026-0142",
+      "operation": "retire-bracket",
+      "rationale": "middle block collapsed into the tail block for general service",
+      "service_class": "commercial",
+      "status": "approved"
+    },
+    {
+      "bracket": {
+        "bracket_id": "COM-B",
+        "rate_per_kwh_cents": 21,
+        "upper_kwh": 1800
+      },
+      "docket": "DK-117",
+      "effective_date": "2026-04-01",
+      "filed_on": "2026-03-04",
+      "filing_id": "PUC-2026-0155",
+      "operation": "add-bracket",
+      "rationale": "middle block restored at a lower ceiling after the rehearing",
+      "service_class": "commercial",
+      "status": "approved"
+    },
+    {
+      "demand_rate_cents_per_kw": 1490,
+      "docket": "DK-120",
+      "effective_date": "2026-04-01",
+      "filed_on": "2026-03-18",
+      "filing_id": "PUC-2026-0161",
+      "operation": "adjust-demand-charge",
+      "rationale": "capacity cost of service updated for the large power class",
+      "service_class": "industrial",
+      "status": "approved"
+    },
+    {
+      "bracket": {
+        "bracket_id": "RES-D",
+        "rate_per_kwh_cents": 24,
+        "upper_kwh": 1500
+      },
+      "docket": "DK-121",
+      "effective_date": "2026-05-01",
+      "filed_on": "2026-03-22",
+      "filing_id": "PUC-2026-0166",
+      "operation": "add-bracket",
+      "rationale": "high-use block inserted below the tail block",
+      "service_class": "residential",
+      "status": "approved"
+    },
+    {
+      "bracket": {
+        "bracket_id": "RES-B",
+        "rate_per_kwh_cents": 25,
+        "upper_kwh": 600
+      },
+      "docket": "DK-121",
+      "effective_date": "2026-05-01",
+      "filed_on": "2026-04-02",
+      "filing_id": "PUC-2026-0170",
+      "operation": "replace-bracket",
+      "rationale": "second-block revision withdrawn before the hearing closed",
+      "service_class": "residential",
+      "status": "withdrawn"
+    },
+    {
+      "demand_rate_cents_per_kw": 1700,
+      "docket": "DK-120",
+      "effective_date": "2026-04-15",
+      "filed_on": "2026-04-09",
+      "filing_id": "PUC-2026-0173",
+      "operation": "adjust-demand-charge",
+      "rationale": "further capacity adjustment still under examination",
+      "service_class": "industrial",
+      "status": "pending"
+    },
+    {
+      "bracket_id": "IND-A",
+      "docket": "DK-124",
+      "effective_date": "2026-05-01",
+      "filed_on": "2026-04-15",
+      "filing_id": "PUC-2026-0180",
+      "operation": "retire-bracket",
+      "rationale": "large power moves to a single energy block",
+      "service_class": "industrial",
+      "status": "approved"
+    }
+  ],
+  "base_tariff": {
+    "classes": {
+      "commercial": {
+        "brackets": [
+          {
+            "bracket_id": "COM-A",
+            "rate_per_kwh_cents": 16,
+            "upper_kwh": 500
+          },
+          {
+            "bracket_id": "COM-B",
+            "rate_per_kwh_cents": 22,
+            "upper_kwh": 2000
+          },
+          {
+            "bracket_id": "COM-C",
+            "rate_per_kwh_cents": 29,
+            "upper_kwh": null
+          }
+        ],
+        "demand_rate_cents_per_kw": 780,
+        "standing_charge_cents_per_day": 96
+      },
+      "industrial": {
+        "brackets": [
+          {
+            "bracket_id": "IND-A",
+            "rate_per_kwh_cents": 11,
+            "upper_kwh": 5000
+          },
+          {
+            "bracket_id": "IND-B",
+            "rate_per_kwh_cents": 15,
+            "upper_kwh": null
+          }
+        ],
+        "demand_rate_cents_per_kw": 1240,
+        "standing_charge_cents_per_day": 310
+      },
+      "residential": {
+        "brackets": [
+          {
+            "bracket_id": "RES-A",
+            "rate_per_kwh_cents": 14,
+            "upper_kwh": 300
+          },
+          {
+            "bracket_id": "RES-B",
+            "rate_per_kwh_cents": 19,
+            "upper_kwh": 800
+          },
+          {
+            "bracket_id": "RES-C",
+            "rate_per_kwh_cents": 26,
+            "upper_kwh": null
+          }
+        ],
+        "demand_rate_cents_per_kw": 0,
+        "standing_charge_cents_per_day": 41
+      }
+    },
+    "effective_from": "2026-01-01",
+    "tariff_id": "TB-2026"
+  },
+  "broken_biller_sha256": "41155502cd78976950e1f2c7b4be64656a51363041592ef58aff5ef454159ae0",
+  "consolidated_table": {
+    "schedules": [
+      {
+        "classes": {
+          "commercial": {
+            "brackets": [
+              {
+                "bracket_id": "COM-A",
+                "rate_per_kwh_cents": 16,
+                "upper_kwh": 500
+              },
+              {
+                "bracket_id": "COM-B",
+                "rate_per_kwh_cents": 22,
+                "upper_kwh": 2000
+              },
+              {
+                "bracket_id": "COM-C",
+                "rate_per_kwh_cents": 29,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 780,
+            "standing_charge_cents_per_day": 96
+          },
+          "industrial": {
+            "brackets": [
+              {
+                "bracket_id": "IND-A",
+                "rate_per_kwh_cents": 11,
+                "upper_kwh": 5000
+              },
+              {
+                "bracket_id": "IND-B",
+                "rate_per_kwh_cents": 15,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 1240,
+            "standing_charge_cents_per_day": 310
+          },
+          "residential": {
+            "brackets": [
+              {
+                "bracket_id": "RES-A",
+                "rate_per_kwh_cents": 14,
+                "upper_kwh": 300
+              },
+              {
+                "bracket_id": "RES-B",
+                "rate_per_kwh_cents": 19,
+                "upper_kwh": 800
+              },
+              {
+                "bracket_id": "RES-C",
+                "rate_per_kwh_cents": 26,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 0,
+            "standing_charge_cents_per_day": 41
+          }
+        },
+        "effective_from": "2026-01-01"
+      },
+      {
+        "classes": {
+          "commercial": {
+            "brackets": [
+              {
+                "bracket_id": "COM-A",
+                "rate_per_kwh_cents": 16,
+                "upper_kwh": 500
+              },
+              {
+                "bracket_id": "COM-C",
+                "rate_per_kwh_cents": 29,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 780,
+            "standing_charge_cents_per_day": 96
+          },
+          "industrial": {
+            "brackets": [
+              {
+                "bracket_id": "IND-A",
+                "rate_per_kwh_cents": 11,
+                "upper_kwh": 5000
+              },
+              {
+                "bracket_id": "IND-B",
+                "rate_per_kwh_cents": 15,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 1240,
+            "standing_charge_cents_per_day": 310
+          },
+          "residential": {
+            "brackets": [
+              {
+                "bracket_id": "RES-A",
+                "rate_per_kwh_cents": 16,
+                "upper_kwh": 240
+              },
+              {
+                "bracket_id": "RES-B",
+                "rate_per_kwh_cents": 19,
+                "upper_kwh": 800
+              },
+              {
+                "bracket_id": "RES-C",
+                "rate_per_kwh_cents": 26,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 0,
+            "standing_charge_cents_per_day": 41
+          }
+        },
+        "effective_from": "2026-03-01"
+      },
+      {
+        "classes": {
+          "commercial": {
+            "brackets": [
+              {
+                "bracket_id": "COM-A",
+                "rate_per_kwh_cents": 16,
+                "upper_kwh": 500
+              },
+              {
+                "bracket_id": "COM-B",
+                "rate_per_kwh_cents": 21,
+                "upper_kwh": 1800
+              },
+              {
+                "bracket_id": "COM-C",
+                "rate_per_kwh_cents": 29,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 780,
+            "standing_charge_cents_per_day": 96
+          },
+          "industrial": {
+            "brackets": [
+              {
+                "bracket_id": "IND-A",
+                "rate_per_kwh_cents": 11,
+                "upper_kwh": 5000
+              },
+              {
+                "bracket_id": "IND-B",
+                "rate_per_kwh_cents": 15,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 1490,
+            "standing_charge_cents_per_day": 310
+          },
+          "residential": {
+            "brackets": [
+              {
+                "bracket_id": "RES-A",
+                "rate_per_kwh_cents": 16,
+                "upper_kwh": 240
+              },
+              {
+                "bracket_id": "RES-B",
+                "rate_per_kwh_cents": 19,
+                "upper_kwh": 800
+              },
+              {
+                "bracket_id": "RES-C",
+                "rate_per_kwh_cents": 26,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 0,
+            "standing_charge_cents_per_day": 41
+          }
+        },
+        "effective_from": "2026-04-01"
+      },
+      {
+        "classes": {
+          "commercial": {
+            "brackets": [
+              {
+                "bracket_id": "COM-A",
+                "rate_per_kwh_cents": 16,
+                "upper_kwh": 500
+              },
+              {
+                "bracket_id": "COM-B",
+                "rate_per_kwh_cents": 21,
+                "upper_kwh": 1800
+              },
+              {
+                "bracket_id": "COM-C",
+                "rate_per_kwh_cents": 29,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 780,
+            "standing_charge_cents_per_day": 96
+          },
+          "industrial": {
+            "brackets": [
+              {
+                "bracket_id": "IND-B",
+                "rate_per_kwh_cents": 15,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 1490,
+            "standing_charge_cents_per_day": 310
+          },
+          "residential": {
+            "brackets": [
+              {
+                "bracket_id": "RES-A",
+                "rate_per_kwh_cents": 16,
+                "upper_kwh": 240
+              },
+              {
+                "bracket_id": "RES-B",
+                "rate_per_kwh_cents": 19,
+                "upper_kwh": 800
+              },
+              {
+                "bracket_id": "RES-D",
+                "rate_per_kwh_cents": 24,
+                "upper_kwh": 1500
+              },
+              {
+                "bracket_id": "RES-C",
+                "rate_per_kwh_cents": 26,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 0,
+            "standing_charge_cents_per_day": 41
+          }
+        },
+        "effective_from": "2026-05-01"
+      }
+    ],
+    "tariff_id": "TB-2026"
+  },
+  "primary": {
+    "queue_rows": [
+      {
+        "account": "ac-3350",
+        "bill_id": "ac-3350:R-1031:2026-04-06",
+        "billed_days": 31,
+        "billed_demand_kw": 168,
+        "billed_subtotal_cents": 429797,
+        "bracket_ids": [
+          "IND-A",
+          "IND-B"
+        ],
+        "bracket_span": 2,
+        "consumption_kwh": 12400,
+        "demand_charge_cents": 250319,
+        "energy_charge_cents": 169868,
+        "estimated": false,
+        "exception_score": 177,
+        "levy_cents": 10315,
+        "minimum_applied": false,
+        "peak_demand_kw": 165,
+        "period_end": "2026-05-06",
+        "period_start": "2026-04-06",
+        "ratchet_floor_kw": 168,
+        "ratchet_uplift_kw": 3,
+        "read_id": "R-1031",
+        "schedule_versions_applied": [
+          "2026-04-01",
+          "2026-05-01"
+        ],
+        "segment_consumption_kwh": [
+          10000,
+          2400
+        ],
+        "segment_count": 2,
+        "segment_days": [
+          25,
+          6
+        ],
+        "service_class": "industrial",
+        "standing_charge_cents": 9610,
+        "subtotal_cents": 429797,
+        "tier": "escalate",
+        "total_due_cents": 440112
+      },
+      {
+        "account": "ac-3350",
+        "bill_id": "ac-3350:R-1030:2026-03-05",
+        "billed_days": 31,
+        "billed_demand_kw": 210,
+        "billed_subtotal_cents": 403780,
+        "bracket_ids": [
+          "IND-A",
+          "IND-B"
+        ],
+        "bracket_span": 2,
+        "consumption_kwh": 9800,
+        "demand_charge_cents": 267174,
+        "energy_charge_cents": 126996,
+        "estimated": false,
+        "exception_score": 166,
+        "levy_cents": 9690,
+        "minimum_applied": false,
+        "peak_demand_kw": 210,
+        "period_end": "2026-04-04",
+        "period_start": "2026-03-05",
+        "ratchet_floor_kw": 0,
+        "ratchet_uplift_kw": 0,
+        "read_id": "R-1030",
+        "schedule_versions_applied": [
+          "2026-03-01",
+          "2026-04-01"
+        ],
+        "segment_consumption_kwh": [
+          8535,
+          1265
+        ],
+        "segment_count": 2,
+        "segment_days": [
+          27,
+          4
+        ],
+        "service_class": "industrial",
+        "standing_charge_cents": 9610,
+        "subtotal_cents": 403780,
+        "tier": "escalate",
+        "total_due_cents": 413470
+      },
+      {
+        "account": "ac-7781",
+        "bill_id": "ac-7781:R-1011:2026-04-25",
+        "billed_days": 31,
+        "billed_demand_kw": 44,
+        "billed_subtotal_cents": 134921,
+        "bracket_ids": [
+          "IND-A",
+          "IND-B"
+        ],
+        "bracket_span": 2,
+        "consumption_kwh": 4200,
+        "demand_charge_cents": 65559,
+        "energy_charge_cents": 59752,
+        "estimated": false,
+        "exception_score": 57,
+        "levy_cents": 3238,
+        "minimum_applied": false,
+        "peak_demand_kw": 38,
+        "period_end": "2026-05-25",
+        "period_start": "2026-04-25",
+        "ratchet_floor_kw": 44,
+        "ratchet_uplift_kw": 6,
+        "read_id": "R-1011",
+        "schedule_versions_applied": [
+          "2026-04-01",
+          "2026-05-01"
+        ],
+        "segment_consumption_kwh": [
+          812,
+          3388
+        ],
+        "segment_count": 2,
+        "segment_days": [
+          6,
+          25
+        ],
+        "service_class": "industrial",
+        "standing_charge_cents": 9610,
+        "subtotal_cents": 134921,
+        "tier": "escalate",
+        "total_due_cents": 138159
+      },
+      {
+        "account": "ac-7781",
+        "bill_id": "ac-7781:R-1010:2026-03-25",
+        "billed_days": 31,
+        "billed_demand_kw": 55,
+        "billed_subtotal_cents": 124497,
+        "bracket_ids": [
+          "COM-A",
+          "COM-B",
+          "COM-C",
+          "IND-A"
+        ],
+        "bracket_span": 4,
+        "consumption_kwh": 3100,
+        "demand_charge_cents": 61794,
+        "energy_charge_cents": 56517,
+        "estimated": false,
+        "exception_score": 53,
+        "levy_cents": 2987,
+        "minimum_applied": false,
+        "peak_demand_kw": 55,
+        "period_end": "2026-04-24",
+        "period_start": "2026-03-25",
+        "ratchet_floor_kw": 0,
+        "ratchet_uplift_kw": 0,
+        "read_id": "R-1010",
+        "schedule_versions_applied": [
+          "2026-03-01",
+          "2026-04-01"
+        ],
+        "segment_consumption_kwh": [
+          700,
+          900,
+          1500
+        ],
+        "segment_count": 3,
+        "segment_days": [
+          7,
+          9,
+          15
+        ],
+        "service_class": "industrial",
+        "standing_charge_cents": 6186,
+        "subtotal_cents": 124497,
+        "tier": "review",
+        "total_due_cents": 127484
+      },
+      {
+        "account": "ac-9024",
+        "bill_id": "ac-9024:R-1021:2026-03-02",
+        "billed_days": 30,
+        "billed_demand_kw": 50,
+        "billed_subtotal_cents": 106430,
+        "bracket_ids": [
+          "COM-A",
+          "COM-C"
+        ],
+        "bracket_span": 2,
+        "consumption_kwh": 2450,
+        "demand_charge_cents": 39000,
+        "energy_charge_cents": 64550,
+        "estimated": false,
+        "exception_score": 49,
+        "levy_cents": 3299,
+        "minimum_applied": false,
+        "peak_demand_kw": 20,
+        "period_end": "2026-03-31",
+        "period_start": "2026-03-02",
+        "ratchet_floor_kw": 50,
+        "ratchet_uplift_kw": 30,
+        "read_id": "R-1021",
+        "schedule_versions_applied": [
+          "2026-03-01"
+        ],
+        "segment_consumption_kwh": [
+          2450
+        ],
+        "segment_count": 1,
+        "segment_days": [
+          30
+        ],
+        "service_class": "commercial",
+        "standing_charge_cents": 2880,
+        "subtotal_cents": 106430,
+        "tier": "review",
+        "total_due_cents": 109729
+      },
+      {
+        "account": "ac-9024",
+        "bill_id": "ac-9024:R-1022:2026-04-02",
+        "billed_days": 29,
+        "billed_demand_kw": 71,
+        "billed_subtotal_cents": 93464,
+        "bracket_ids": [
+          "COM-A",
+          "COM-B"
+        ],
+        "bracket_span": 2,
+        "consumption_kwh": 1800,
+        "demand_charge_cents": 55380,
+        "energy_charge_cents": 35300,
+        "estimated": false,
+        "exception_score": 39,
+        "levy_cents": 2897,
+        "minimum_applied": false,
+        "peak_demand_kw": 71,
+        "period_end": "2026-04-30",
+        "period_start": "2026-04-02",
+        "ratchet_floor_kw": 50,
+        "ratchet_uplift_kw": 0,
+        "read_id": "R-1022",
+        "schedule_versions_applied": [
+          "2026-04-01"
+        ],
+        "segment_consumption_kwh": [
+          1800
+        ],
+        "segment_count": 1,
+        "segment_days": [
+          29
+        ],
+        "service_class": "commercial",
+        "standing_charge_cents": 2784,
+        "subtotal_cents": 93464,
+        "tier": "review",
+        "total_due_cents": 96361
+      },
+      {
+        "account": "ac-4412",
+        "bill_id": "ac-4412:R-1003:2026-04-17",
+        "billed_days": 32,
+        "billed_demand_kw": 0,
+        "billed_subtotal_cents": 38924,
+        "bracket_ids": [
+          "RES-A",
+          "RES-B",
+          "RES-C",
+          "RES-D"
+        ],
+        "bracket_span": 4,
+        "consumption_kwh": 1720,
+        "demand_charge_cents": 0,
+        "energy_charge_cents": 37612,
+        "estimated": false,
+        "exception_score": 18,
+        "levy_cents": 934,
+        "minimum_applied": false,
+        "peak_demand_kw": 0,
+        "period_end": "2026-05-18",
+        "period_start": "2026-04-17",
+        "ratchet_floor_kw": 0,
+        "ratchet_uplift_kw": 0,
+        "read_id": "R-1003",
+        "schedule_versions_applied": [
+          "2026-04-01",
+          "2026-05-01"
+        ],
+        "segment_consumption_kwh": [
+          752,
+          968
+        ],
+        "segment_count": 2,
+        "segment_days": [
+          14,
+          18
+        ],
+        "service_class": "residential",
+        "standing_charge_cents": 1312,
+        "subtotal_cents": 38924,
+        "tier": "review",
+        "total_due_cents": 39858
+      },
+      {
+        "account": "ac-4412",
+        "bill_id": "ac-4412:R-1001:2026-02-14",
+        "billed_days": 30,
+        "billed_demand_kw": 0,
+        "billed_subtotal_cents": 12318,
+        "bracket_ids": [
+          "RES-A",
+          "RES-B"
+        ],
+        "bracket_span": 2,
+        "consumption_kwh": 642,
+        "demand_charge_cents": 0,
+        "energy_charge_cents": 11088,
+        "estimated": false,
+        "exception_score": 6,
+        "levy_cents": 295,
+        "minimum_applied": false,
+        "peak_demand_kw": 0,
+        "period_end": "2026-03-15",
+        "period_start": "2026-02-14",
+        "ratchet_floor_kw": 0,
+        "ratchet_uplift_kw": 0,
+        "read_id": "R-1001",
+        "schedule_versions_applied": [
+          "2026-01-01",
+          "2026-03-01"
+        ],
+        "segment_consumption_kwh": [
+          321,
+          321
+        ],
+        "segment_count": 2,
+        "segment_days": [
+          15,
+          15
+        ],
+        "service_class": "residential",
+        "standing_charge_cents": 1230,
+        "subtotal_cents": 12318,
+        "tier": "review",
+        "total_due_cents": 12613
+      },
+      {
+        "account": "ac-5507",
+        "bill_id": "ac-5507:R-1060:2026-04-05",
+        "billed_days": 30,
+        "billed_demand_kw": 0,
+        "billed_subtotal_cents": 1800,
+        "bracket_ids": [
+          "RES-A"
+        ],
+        "bracket_span": 1,
+        "consumption_kwh": 10,
+        "demand_charge_cents": 0,
+        "energy_charge_cents": 160,
+        "estimated": false,
+        "exception_score": 0,
+        "levy_cents": 43,
+        "minimum_applied": true,
+        "peak_demand_kw": 0,
+        "period_end": "2026-05-04",
+        "period_start": "2026-04-05",
+        "ratchet_floor_kw": 0,
+        "ratchet_uplift_kw": 0,
+        "read_id": "R-1060",
+        "schedule_versions_applied": [
+          "2026-04-01",
+          "2026-05-01"
+        ],
+        "segment_consumption_kwh": [
+          8,
+          2
+        ],
+        "segment_count": 2,
+        "segment_days": [
+          26,
+          4
+        ],
+        "service_class": "residential",
+        "standing_charge_cents": 1230,
+        "subtotal_cents": 1390,
+        "tier": "review",
+        "total_due_cents": 1843
+      },
+      {
+        "account": "ac-6690",
+        "bill_id": "ac-6690:R-1040:2026-05-02",
+        "billed_days": 30,
+        "billed_demand_kw": 9,
+        "billed_subtotal_cents": 12780,
+        "bracket_ids": [
+          "COM-A"
+        ],
+        "bracket_span": 1,
+        "consumption_kwh": 180,
+        "demand_charge_cents": 7020,
+        "energy_charge_cents": 2880,
+        "estimated": true,
+        "exception_score": 5,
+        "levy_cents": 396,
+        "minimum_applied": false,
+        "peak_demand_kw": 9,
+        "period_end": "2026-05-31",
+        "period_start": "2026-05-02",
+        "ratchet_floor_kw": 0,
+        "ratchet_uplift_kw": 0,
+        "read_id": "R-1040",
+        "schedule_versions_applied": [
+          "2026-05-01"
+        ],
+        "segment_consumption_kwh": [
+          180
+        ],
+        "segment_count": 1,
+        "segment_days": [
+          30
+        ],
+        "service_class": "commercial",
+        "standing_charge_cents": 2880,
+        "subtotal_cents": 12780,
+        "tier": "watch",
+        "total_due_cents": 13176
+      }
+    ],
+    "register": {
+      "ac-3350": [
+        {
+          "billed_days": 31,
+          "billed_demand_kw": 210,
+          "billed_subtotal_cents": 403780,
+          "bracket_ids": [
+            "IND-A",
+            "IND-B"
+          ],
+          "bracket_span": 2,
+          "consumption_kwh": 9800,
+          "demand_charge_cents": 267174,
+          "energy_charge_cents": 126996,
+          "estimated": false,
+          "exception_score": 166,
+          "levy_cents": 9690,
+          "minimum_applied": false,
+          "peak_demand_kw": 210,
+          "period_end": "2026-04-04",
+          "period_start": "2026-03-05",
+          "ratchet_floor_kw": 0,
+          "ratchet_uplift_kw": 0,
+          "read_id": "R-1030",
+          "schedule_versions_applied": [
+            "2026-03-01",
+            "2026-04-01"
+          ],
+          "segment_consumption_kwh": [
+            8535,
+            1265
+          ],
+          "segment_count": 2,
+          "segment_days": [
+            27,
+            4
+          ],
+          "service_class": "industrial",
+          "standing_charge_cents": 9610,
+          "subtotal_cents": 403780,
+          "total_due_cents": 413470
+        },
+        {
+          "billed_days": 31,
+          "billed_demand_kw": 168,
+          "billed_subtotal_cents": 429797,
+          "bracket_ids": [
+            "IND-A",
+            "IND-B"
+          ],
+          "bracket_span": 2,
+          "consumption_kwh": 12400,
+          "demand_charge_cents": 250319,
+          "energy_charge_cents": 169868,
+          "estimated": false,
+          "exception_score": 177,
+          "levy_cents": 10315,
+          "minimum_applied": false,
+          "peak_demand_kw": 165,
+          "period_end": "2026-05-06",
+          "period_start": "2026-04-06",
+          "ratchet_floor_kw": 168,
+          "ratchet_uplift_kw": 3,
+          "read_id": "R-1031",
+          "schedule_versions_applied": [
+            "2026-04-01",
+            "2026-05-01"
+          ],
+          "segment_consumption_kwh": [
+            10000,
+            2400
+          ],
+          "segment_count": 2,
+          "segment_days": [
+            25,
+            6
+          ],
+          "service_class": "industrial",
+          "standing_charge_cents": 9610,
+          "subtotal_cents": 429797,
+          "total_due_cents": 440112
+        }
+      ],
+      "ac-4412": [
+        {
+          "billed_days": 30,
+          "billed_demand_kw": 0,
+          "billed_subtotal_cents": 12318,
+          "bracket_ids": [
+            "RES-A",
+            "RES-B"
+          ],
+          "bracket_span": 2,
+          "consumption_kwh": 642,
+          "demand_charge_cents": 0,
+          "energy_charge_cents": 11088,
+          "estimated": false,
+          "exception_score": 6,
+          "levy_cents": 295,
+          "minimum_applied": false,
+          "peak_demand_kw": 0,
+          "period_end": "2026-03-15",
+          "period_start": "2026-02-14",
+          "ratchet_floor_kw": 0,
+          "ratchet_uplift_kw": 0,
+          "read_id": "R-1001",
+          "schedule_versions_applied": [
+            "2026-01-01",
+            "2026-03-01"
+          ],
+          "segment_consumption_kwh": [
+            321,
+            321
+          ],
+          "segment_count": 2,
+          "segment_days": [
+            15,
+            15
+          ],
+          "service_class": "residential",
+          "standing_charge_cents": 1230,
+          "subtotal_cents": 12318,
+          "total_due_cents": 12613
+        },
+        {
+          "billed_days": 16,
+          "billed_demand_kw": 0,
+          "billed_subtotal_cents": 4496,
+          "bracket_ids": [
+            "RES-A"
+          ],
+          "bracket_span": 1,
+          "consumption_kwh": 240,
+          "demand_charge_cents": 0,
+          "energy_charge_cents": 3840,
+          "estimated": false,
+          "exception_score": 1,
+          "levy_cents": 107,
+          "minimum_applied": false,
+          "peak_demand_kw": 0,
+          "period_end": "2026-03-31",
+          "period_start": "2026-03-16",
+          "ratchet_floor_kw": 0,
+          "ratchet_uplift_kw": 0,
+          "read_id": "R-1002",
+          "schedule_versions_applied": [
+            "2026-03-01"
+          ],
+          "segment_consumption_kwh": [
+            240
+          ],
+          "segment_count": 1,
+          "segment_days": [
+            16
+          ],
+          "service_class": "residential",
+          "standing_charge_cents": 656,
+          "subtotal_cents": 4496,
+          "total_due_cents": 4603
+        },
+        {
+          "billed_days": 32,
+          "billed_demand_kw": 0,
+          "billed_subtotal_cents": 38924,
+          "bracket_ids": [
+            "RES-A",
+            "RES-B",
+            "RES-C",
+            "RES-D"
+          ],
+          "bracket_span": 4,
+          "consumption_kwh": 1720,
+          "demand_charge_cents": 0,
+          "energy_charge_cents": 37612,
+          "estimated": false,
+          "exception_score": 18,
+          "levy_cents": 934,
+          "minimum_applied": false,
+          "peak_demand_kw": 0,
+          "period_end": "2026-05-18",
+          "period_start": "2026-04-17",
+          "ratchet_floor_kw": 0,
+          "ratchet_uplift_kw": 0,
+          "read_id": "R-1003",
+          "schedule_versions_applied": [
+            "2026-04-01",
+            "2026-05-01"
+          ],
+          "segment_consumption_kwh": [
+            752,
+            968
+          ],
+          "segment_count": 2,
+          "segment_days": [
+            14,
+            18
+          ],
+          "service_class": "residential",
+          "standing_charge_cents": 1312,
+          "subtotal_cents": 38924,
+          "total_due_cents": 39858
+        }
+      ],
+      "ac-5507": [
+        {
+          "billed_days": 30,
+          "billed_demand_kw": 0,
+          "billed_subtotal_cents": 1800,
+          "bracket_ids": [
+            "RES-A"
+          ],
+          "bracket_span": 1,
+          "consumption_kwh": 10,
+          "demand_charge_cents": 0,
+          "energy_charge_cents": 160,
+          "estimated": false,
+          "exception_score": 0,
+          "levy_cents": 43,
+          "minimum_applied": true,
+          "peak_demand_kw": 0,
+          "period_end": "2026-05-04",
+          "period_start": "2026-04-05",
+          "ratchet_floor_kw": 0,
+          "ratchet_uplift_kw": 0,
+          "read_id": "R-1060",
+          "schedule_versions_applied": [
+            "2026-04-01",
+            "2026-05-01"
+          ],
+          "segment_consumption_kwh": [
+            8,
+            2
+          ],
+          "segment_count": 2,
+          "segment_days": [
+            26,
+            4
+          ],
+          "service_class": "residential",
+          "standing_charge_cents": 1230,
+          "subtotal_cents": 1390,
+          "total_due_cents": 1843
+        }
+      ],
+      "ac-6690": [
+        {
+          "billed_days": 30,
+          "billed_demand_kw": 9,
+          "billed_subtotal_cents": 12780,
+          "bracket_ids": [
+            "COM-A"
+          ],
+          "bracket_span": 1,
+          "consumption_kwh": 180,
+          "demand_charge_cents": 7020,
+          "energy_charge_cents": 2880,
+          "estimated": true,
+          "exception_score": 5,
+          "levy_cents": 396,
+          "minimum_applied": false,
+          "peak_demand_kw": 9,
+          "period_end": "2026-05-31",
+          "period_start": "2026-05-02",
+          "ratchet_floor_kw": 0,
+          "ratchet_uplift_kw": 0,
+          "read_id": "R-1040",
+          "schedule_versions_applied": [
+            "2026-05-01"
+          ],
+          "segment_consumption_kwh": [
+            180
+          ],
+          "segment_count": 1,
+          "segment_days": [
+            30
+          ],
+          "service_class": "commercial",
+          "standing_charge_cents": 2880,
+          "subtotal_cents": 12780,
+          "total_due_cents": 13176
+        }
+      ],
+      "ac-7781": [
+        {
+          "billed_days": 31,
+          "billed_demand_kw": 55,
+          "billed_subtotal_cents": 124497,
+          "bracket_ids": [
+            "COM-A",
+            "COM-B",
+            "COM-C",
+            "IND-A"
+          ],
+          "bracket_span": 4,
+          "consumption_kwh": 3100,
+          "demand_charge_cents": 61794,
+          "energy_charge_cents": 56517,
+          "estimated": false,
+          "exception_score": 53,
+          "levy_cents": 2987,
+          "minimum_applied": false,
+          "peak_demand_kw": 55,
+          "period_end": "2026-04-24",
+          "period_start": "2026-03-25",
+          "ratchet_floor_kw": 0,
+          "ratchet_uplift_kw": 0,
+          "read_id": "R-1010",
+          "schedule_versions_applied": [
+            "2026-03-01",
+            "2026-04-01"
+          ],
+          "segment_consumption_kwh": [
+            700,
+            900,
+            1500
+          ],
+          "segment_count": 3,
+          "segment_days": [
+            7,
+            9,
+            15
+          ],
+          "service_class": "industrial",
+          "standing_charge_cents": 6186,
+          "subtotal_cents": 124497,
+          "total_due_cents": 127484
+        },
+        {
+          "billed_days": 31,
+          "billed_demand_kw": 44,
+          "billed_subtotal_cents": 134921,
+          "bracket_ids": [
+            "IND-A",
+            "IND-B"
+          ],
+          "bracket_span": 2,
+          "consumption_kwh": 4200,
+          "demand_charge_cents": 65559,
+          "energy_charge_cents": 59752,
+          "estimated": false,
+          "exception_score": 57,
+          "levy_cents": 3238,
+          "minimum_applied": false,
+          "peak_demand_kw": 38,
+          "period_end": "2026-05-25",
+          "period_start": "2026-04-25",
+          "ratchet_floor_kw": 44,
+          "ratchet_uplift_kw": 6,
+          "read_id": "R-1011",
+          "schedule_versions_applied": [
+            "2026-04-01",
+            "2026-05-01"
+          ],
+          "segment_consumption_kwh": [
+            812,
+            3388
+          ],
+          "segment_count": 2,
+          "segment_days": [
+            6,
+            25
+          ],
+          "service_class": "industrial",
+          "standing_charge_cents": 9610,
+          "subtotal_cents": 134921,
+          "total_due_cents": 138159
+        }
+      ],
+      "ac-9024": [
+        {
+          "billed_days": 28,
+          "billed_demand_kw": 62,
+          "billed_subtotal_cents": 59048,
+          "bracket_ids": [
+            "COM-A"
+          ],
+          "bracket_span": 1,
+          "consumption_kwh": 500,
+          "demand_charge_cents": 48360,
+          "energy_charge_cents": 8000,
+          "estimated": false,
+          "exception_score": 24,
+          "levy_cents": 1830,
+          "minimum_applied": false,
+          "peak_demand_kw": 62,
+          "period_end": "2026-02-28",
+          "period_start": "2026-02-01",
+          "ratchet_floor_kw": 0,
+          "ratchet_uplift_kw": 0,
+          "read_id": "R-1020",
+          "schedule_versions_applied": [
+            "2026-01-01"
+          ],
+          "segment_consumption_kwh": [
+            500
+          ],
+          "segment_count": 1,
+          "segment_days": [
+            28
+          ],
+          "service_class": "commercial",
+          "standing_charge_cents": 2688,
+          "subtotal_cents": 59048,
+          "total_due_cents": 60878
+        },
+        {
+          "billed_days": 30,
+          "billed_demand_kw": 50,
+          "billed_subtotal_cents": 106430,
+          "bracket_ids": [
+            "COM-A",
+            "COM-C"
+          ],
+          "bracket_span": 2,
+          "consumption_kwh": 2450,
+          "demand_charge_cents": 39000,
+          "energy_charge_cents": 64550,
+          "estimated": false,
+          "exception_score": 49,
+          "levy_cents": 3299,
+          "minimum_applied": false,
+          "peak_demand_kw": 20,
+          "period_end": "2026-03-31",
+          "period_start": "2026-03-02",
+          "ratchet_floor_kw": 50,
+          "ratchet_uplift_kw": 30,
+          "read_id": "R-1021",
+          "schedule_versions_applied": [
+            "2026-03-01"
+          ],
+          "segment_consumption_kwh": [
+            2450
+          ],
+          "segment_count": 1,
+          "segment_days": [
+            30
+          ],
+          "service_class": "commercial",
+          "standing_charge_cents": 2880,
+          "subtotal_cents": 106430,
+          "total_due_cents": 109729
+        },
+        {
+          "billed_days": 29,
+          "billed_demand_kw": 71,
+          "billed_subtotal_cents": 93464,
+          "bracket_ids": [
+            "COM-A",
+            "COM-B"
+          ],
+          "bracket_span": 2,
+          "consumption_kwh": 1800,
+          "demand_charge_cents": 55380,
+          "energy_charge_cents": 35300,
+          "estimated": false,
+          "exception_score": 39,
+          "levy_cents": 2897,
+          "minimum_applied": false,
+          "peak_demand_kw": 71,
+          "period_end": "2026-04-30",
+          "period_start": "2026-04-02",
+          "ratchet_floor_kw": 50,
+          "ratchet_uplift_kw": 0,
+          "read_id": "R-1022",
+          "schedule_versions_applied": [
+            "2026-04-01"
+          ],
+          "segment_consumption_kwh": [
+            1800
+          ],
+          "segment_count": 1,
+          "segment_days": [
+            29
+          ],
+          "service_class": "commercial",
+          "standing_charge_cents": 2784,
+          "subtotal_cents": 93464,
+          "total_due_cents": 96361
+        }
+      ]
+    },
+    "summary": {
+      "account_count": 6,
+      "bill_count": 12,
+      "canonical_read_count": 12,
+      "dropped_read_count": 1,
+      "estimated_bill_count": 1,
+      "largest_bill_cents": 440112,
+      "max_exception_score": 177,
+      "max_ratchet_uplift_kw": 30,
+      "max_total_due_cents": 440112,
+      "minimum_applied_count": 1,
+      "queued_bill_count": 10,
+      "raw_read_count": 15,
+      "schedule_version_count": 4,
+      "schema_version": "tariff-bill-v1",
+      "tier_counts": {
+        "escalate": 3,
+        "review": 6,
+        "watch": 1
+      },
+      "total_demand_charge_cents": 794606,
+      "total_due_cents": 1458286,
+      "total_energy_charge_cents": 576563,
+      "total_levy_cents": 36031,
+      "total_standing_charge_cents": 50676,
+      "unique_read_ids": 13
+    }
+  },
+  "shipped_stale_table": {
+    "schedules": [
+      {
+        "classes": {
+          "commercial": {
+            "brackets": [
+              {
+                "bracket_id": "COM-A",
+                "rate_per_kwh_cents": 16,
+                "upper_kwh": 500
+              },
+              {
+                "bracket_id": "COM-B",
+                "rate_per_kwh_cents": 22,
+                "upper_kwh": 2000
+              },
+              {
+                "bracket_id": "COM-C",
+                "rate_per_kwh_cents": 29,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 780,
+            "standing_charge_cents_per_day": 96
+          },
+          "industrial": {
+            "brackets": [
+              {
+                "bracket_id": "IND-A",
+                "rate_per_kwh_cents": 11,
+                "upper_kwh": 5000
+              },
+              {
+                "bracket_id": "IND-B",
+                "rate_per_kwh_cents": 15,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 1240,
+            "standing_charge_cents_per_day": 310
+          },
+          "residential": {
+            "brackets": [
+              {
+                "bracket_id": "RES-A",
+                "rate_per_kwh_cents": 14,
+                "upper_kwh": 300
+              },
+              {
+                "bracket_id": "RES-B",
+                "rate_per_kwh_cents": 19,
+                "upper_kwh": 800
+              },
+              {
+                "bracket_id": "RES-C",
+                "rate_per_kwh_cents": 26,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 0,
+            "standing_charge_cents_per_day": 41
+          }
+        },
+        "effective_from": "2026-01-01"
+      },
+      {
+        "classes": {
+          "commercial": {
+            "brackets": [
+              {
+                "bracket_id": "COM-A",
+                "rate_per_kwh_cents": 16,
+                "upper_kwh": 500
+              },
+              {
+                "bracket_id": "COM-B",
+                "rate_per_kwh_cents": 22,
+                "upper_kwh": 2000
+              },
+              {
+                "bracket_id": "COM-C",
+                "rate_per_kwh_cents": 29,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 780,
+            "standing_charge_cents_per_day": 96
+          },
+          "industrial": {
+            "brackets": [
+              {
+                "bracket_id": "IND-A",
+                "rate_per_kwh_cents": 11,
+                "upper_kwh": 5000
+              },
+              {
+                "bracket_id": "IND-B",
+                "rate_per_kwh_cents": 15,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 1240,
+            "standing_charge_cents_per_day": 310
+          },
+          "residential": {
+            "brackets": [
+              {
+                "bracket_id": "RES-A",
+                "rate_per_kwh_cents": 15,
+                "upper_kwh": 260
+              },
+              {
+                "bracket_id": "RES-B",
+                "rate_per_kwh_cents": 19,
+                "upper_kwh": 800
+              },
+              {
+                "bracket_id": "RES-C",
+                "rate_per_kwh_cents": 26,
+                "upper_kwh": null
+              }
+            ],
+            "demand_rate_cents_per_kw": 0,
+            "standing_charge_cents_per_day": 41
+          }
+        },
+        "effective_from": "2026-03-01"
+      }
+    ],
+    "tariff_id": "TB-2026"
+  }
+}
