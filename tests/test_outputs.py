@@ -25,6 +25,9 @@ POLICY_PATH = Path("/app/data/billing_policies.json")
 SPEC_PATH = Path("/app/docs/report_spec.json")
 LOG_PATH = Path("/app/incident/tariff_governance_log.md")
 EXPECTED_FIXTURE = Path("/tests/fixtures/expected_report.json")
+# The shipped stale table is overwritten in place by the consolidation, so the
+# verifier keeps its own copy to prove the biller depends on that step.
+STALE_TABLE_REFERENCE_PATH = Path("/tests/fixtures/stale_rate_table.json")
 ALT_INPUT = Path("/tests/fixtures/alt_meter_reads.json")
 
 TIER_ORDER = ["escalate", "review", "watch"]
@@ -35,14 +38,14 @@ SPEC = json.loads(SPEC_PATH.read_text())
 
 POLICY_FIELDS = (
     "admission_min", "escalate_total_cents", "escalate_score_min", "escalate_ratchet_min",
-    "review_score_min", "review_bracket_min", "minimum_bill_cents", "minimum_bill_days_basis",
-    "ratchet_percent", "ratchet_lookback_periods", "levy_bps",
+    "review_score_min", "review_bracket_min", "review_segment_min", "minimum_bill_cents",
+    "minimum_bill_days_basis", "ratchet_percent", "ratchet_lookback_periods", "levy_bps",
 )
 BASELINE = {
-    "admission_min": 4, "escalate_total_cents": 120000, "escalate_score_min": 18,
-    "escalate_ratchet_min": 40, "review_score_min": 8, "review_bracket_min": 3,
-    "minimum_bill_cents": 1800, "minimum_bill_days_basis": 30, "ratchet_percent": 80,
-    "ratchet_lookback_periods": 3, "levy_bps": 240,
+    "admission_min": 240, "escalate_total_cents": 1870000, "escalate_score_min": 780,
+    "escalate_ratchet_min": 540, "review_score_min": 430, "review_bracket_min": 5,
+    "review_segment_min": 27, "minimum_bill_cents": 1800, "minimum_bill_days_basis": 30,
+    "ratchet_percent": 80, "ratchet_lookback_periods": 3, "levy_bps": 240,
 }
 
 TABLE_KEYS = {"tariff_id", "schedules"}
@@ -57,6 +60,14 @@ FILING_ONLY_KEYS = {
 BILL_KEYS = set(SPEC["bill_register"]["required_fields"])
 QUEUE_KEYS = set(SPEC["exception_queue"]["required_fields"])
 SUMMARY_KEYS = set(SPEC["billing_summary"]["required_fields"])
+
+
+def _digest(value: object) -> str:
+    """Content digest of a whole artifact; the graded register is far too large
+    to embed in a fixture, so equality is asserted over its digest."""
+    return hashlib.sha256(
+        json.dumps(value, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
 
 
 def _load_json(path: Path):
@@ -165,15 +176,15 @@ def _naive_last_filing_wins_table() -> dict:
 
 
 def test_consolidation_sources_are_intact():
-    assert _load_json(BASE_TARIFF_PATH) == FIXTURE["base_tariff"]
-    assert _load_json(AMENDMENT_PATH) == FIXTURE["amendment_filings"]
+    assert _digest(_load_json(BASE_TARIFF_PATH)) == FIXTURE["base_tariff_digest"]
+    assert _digest(_load_json(AMENDMENT_PATH)) == FIXTURE["amendment_filings_digest"]
 
 
 def test_rate_table_consolidated():
     """/app/data/effective_rate_table.json shipped stale; it must hold the consolidated table."""
     table = _load_json(RATE_TABLE_PATH)
     assert isinstance(table, dict)
-    assert table == FIXTURE["consolidated_table"]
+    assert _digest(table) == FIXTURE["consolidated_table_digest"]
 
 
 def test_consolidated_table_carries_no_filing_bookkeeping():
@@ -211,8 +222,8 @@ def test_consolidated_table_is_sorted():
 
 def test_stale_base_only_and_naive_tables_differ_from_the_consolidated_one():
     """The consolidation is real work: none of the plausible shortcuts land on it."""
-    expected = FIXTURE["consolidated_table"]
-    assert FIXTURE["shipped_stale_table"] != expected
+    expected = FIXTURE["consolidated_table_digest"]
+    assert FIXTURE["shipped_stale_table_digest"] != expected
     assert _base_only_table() != expected
     assert _naive_last_filing_wins_table() != expected
 
@@ -223,7 +234,7 @@ def test_biller_output_depends_on_the_consolidated_table(tmp_path: Path):
     correct_total = FIXTURE["primary"]["summary"]["total_due_cents"]
     try:
         for label, table in (
-            ("shipped_stale", FIXTURE["shipped_stale_table"]),
+            ("shipped_stale", _load_json(STALE_TABLE_REFERENCE_PATH)),
             ("base_only", _base_only_table()),
             ("naive_last_filing_wins", _naive_last_filing_wins_table()),
         ):
@@ -231,8 +242,8 @@ def test_biller_output_depends_on_the_consolidated_table(tmp_path: Path):
             _, summary, register, queue = _run_pipeline(tmp_path / label)
             assert summary != FIXTURE["primary"]["summary"], label
             assert summary["total_due_cents"] != correct_total, label
-            assert (register, queue) != (
-                FIXTURE["primary"]["register"], FIXTURE["primary"]["queue_rows"]
+            assert (_digest(register), _digest(queue)) != (
+                FIXTURE["primary"]["register_digest"], FIXTURE["primary"]["queue_digest"]
             ), label
     finally:
         RATE_TABLE_PATH.write_text(original, encoding="utf-8")
@@ -258,12 +269,12 @@ def test_primary_summary_matches_fixture(primary_outputs):
 
 def test_primary_register_matches_fixture(primary_outputs):
     _, _, register, _ = primary_outputs
-    assert register == FIXTURE["primary"]["register"]
+    assert _digest(register) == FIXTURE["primary"]["register_digest"]
 
 
 def test_primary_queue_matches_fixture(primary_outputs):
     _, _, _, queue = primary_outputs
-    assert queue == FIXTURE["primary"]["queue_rows"]
+    assert _digest(queue) == FIXTURE["primary"]["queue_digest"]
 
 
 def test_summary_schema(primary_outputs):
@@ -402,8 +413,8 @@ def test_broken_snapshot_is_wrong(tmp_path: Path):
         tmp_path, script_path=ORIGINAL_WORKFLOW_PATH
     )
     assert broken_summary != FIXTURE["primary"]["summary"]
-    assert broken_register != FIXTURE["primary"]["register"]
-    assert broken_queue != FIXTURE["primary"]["queue_rows"]
+    assert _digest(broken_register) != FIXTURE["primary"]["register_digest"]
+    assert _digest(broken_queue) != FIXTURE["primary"]["queue_digest"]
 
 
 # --------------------------------------------------------------------------
@@ -418,8 +429,8 @@ def test_pipeline_rerun_idempotent(tmp_path: Path):
 def test_pipeline_supports_alternate_input(tmp_path: Path):
     _, summary, register, queue = _run_pipeline(tmp_path, input_path=ALT_INPUT)
     assert summary == FIXTURE["alternate"]["summary"]
-    assert register == FIXTURE["alternate"]["register"]
-    assert queue == FIXTURE["alternate"]["queue_rows"]
+    assert _digest(register) == FIXTURE["alternate"]["register_digest"]
+    assert _digest(queue) == FIXTURE["alternate"]["queue_digest"]
 
 
 def test_cli_defaults_work_and_match_explicit_run(tmp_path: Path):
@@ -485,7 +496,7 @@ def test_policy_source_path_affects_output(tmp_path: Path):
         POLICY_PATH.write_text(json.dumps(data, indent=2) + "\n")
         _, summary, _, queue = _run_pipeline(tmp_path / "shifted")
         assert summary != FIXTURE["primary"]["summary"]
-        assert len(queue) < len(FIXTURE["primary"]["queue_rows"])
+        assert len(queue) < len(FIXTURE["primary"]["queue_digest"])
     finally:
         POLICY_PATH.write_text(original)
 
@@ -539,7 +550,7 @@ def test_tier_rules_follow_resolved_policy(primary_outputs):
             assert row["tier"] == "escalate"
         elif (
             row["exception_score"] >= policy["review_score_min"]
-            or row["segment_count"] >= 2
+            or row["segment_count"] >= policy["review_segment_min"]
             or row["minimum_applied"]
             or row["bracket_span"] >= policy["review_bracket_min"]
         ):
