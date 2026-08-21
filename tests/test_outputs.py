@@ -23,6 +23,9 @@ AMENDMENT_PATH = Path("/app/data/amendment_filings.json")
 REGISTER_PATH = Path("/app/data/service_class_register.json")
 POLICY_PATH = Path("/app/data/billing_policies.json")
 SPEC_PATH = Path("/app/docs/report_spec.json")
+# The contract is golden metadata: the verifier reads it from its own image,
+# never from the agent-writable copy under /app.
+GOLDEN_CONTRACT_PATH = Path("/tests/fixtures/contract_golden.json")
 LOG_PATH = Path("/app/incident/tariff_governance_log.md")
 EXPECTED_FIXTURE = Path("/tests/fixtures/expected_report.json")
 # The shipped stale table is overwritten in place by the consolidation, so the
@@ -34,7 +37,7 @@ TIER_ORDER = ["escalate", "review", "watch"]
 TIER_RANK = {name: len(TIER_ORDER) - idx for idx, name in enumerate(TIER_ORDER)}
 
 FIXTURE = json.loads(EXPECTED_FIXTURE.read_text())
-SPEC = json.loads(SPEC_PATH.read_text())
+SPEC = json.loads(GOLDEN_CONTRACT_PATH.read_text())
 
 POLICY_FIELDS = (
     "admission_min", "escalate_total_cents", "escalate_score_min", "escalate_ratchet_min",
@@ -176,6 +179,7 @@ def _naive_last_filing_wins_table() -> dict:
 
 
 def test_consolidation_sources_are_intact():
+    """The base tariff and the amendment filings are read, not rewritten."""
     assert _digest(_load_json(BASE_TARIFF_PATH)) == FIXTURE["base_tariff_digest"]
     assert _digest(_load_json(AMENDMENT_PATH)) == FIXTURE["amendment_filings_digest"]
 
@@ -188,6 +192,7 @@ def test_rate_table_consolidated():
 
 
 def test_consolidated_table_carries_no_filing_bookkeeping():
+    """Each consolidated row carries only the declared tariff fields; the filings' own bookkeeping never survives."""
     table = _load_json(RATE_TABLE_PATH)
     assert set(table) == TABLE_KEYS
     for schedule in table["schedules"]:
@@ -205,6 +210,7 @@ def test_consolidated_table_carries_no_filing_bookkeeping():
 
 
 def test_consolidated_table_is_sorted():
+    """The consolidated table ascends by effective date, as the contract requires."""
     table = _load_json(RATE_TABLE_PATH)
     dates = [s["effective_from"] for s in table["schedules"]]
     assert dates == sorted(dates)
@@ -224,8 +230,8 @@ def test_stale_base_only_and_naive_tables_differ_from_the_consolidated_one():
     """The consolidation is real work: none of the plausible shortcuts land on it."""
     expected = FIXTURE["consolidated_table_digest"]
     assert FIXTURE["shipped_stale_table_digest"] != expected
-    assert _base_only_table() != expected
-    assert _naive_last_filing_wins_table() != expected
+    assert _digest(_base_only_table()) != expected
+    assert _digest(_naive_last_filing_wins_table()) != expected
 
 
 def test_biller_output_depends_on_the_consolidated_table(tmp_path: Path):
@@ -253,31 +259,37 @@ def test_biller_output_depends_on_the_consolidated_table(tmp_path: Path):
 # Step 2: the biller output contract
 # --------------------------------------------------------------------------
 def test_cli_exists():
+    """The biller is present at the path the contract names."""
     assert WORKFLOW_PATH.exists()
 
 
 def test_output_dir_contains_exactly_three_files(primary_outputs):
+    """A run writes the three contracted artifacts and nothing else."""
     out_dir, _, _, _ = primary_outputs
     names = sorted(p.name for p in out_dir.iterdir() if p.is_file())
     assert names == ["bill_register.json", "billing_summary.json", "exception_queue.jsonl"]
 
 
 def test_primary_summary_matches_fixture(primary_outputs):
+    """Every summary field matches the sealed reference run."""
     _, summary, _, _ = primary_outputs
     assert summary == FIXTURE["primary"]["summary"]
 
 
 def test_primary_register_matches_fixture(primary_outputs):
+    """The bill register matches the sealed digest."""
     _, _, register, _ = primary_outputs
     assert _digest(register) == FIXTURE["primary"]["register_digest"]
 
 
 def test_primary_queue_matches_fixture(primary_outputs):
+    """The exception queue matches the sealed digest."""
     _, _, _, queue = primary_outputs
     assert _digest(queue) == FIXTURE["primary"]["queue_digest"]
 
 
 def test_summary_schema(primary_outputs):
+    """The summary carries exactly the fields the contract requires."""
     _, summary, _, _ = primary_outputs
     assert set(summary) == SUMMARY_KEYS
     assert summary["schema_version"] == "tariff-bill-v1"
@@ -285,6 +297,7 @@ def test_summary_schema(primary_outputs):
 
 
 def test_register_schema_and_sorting(primary_outputs):
+    """Register entries carry the contracted fields and ascend by account."""
     _, _, register, _ = primary_outputs
     assert list(register) == sorted(register)
     for bills in register.values():
@@ -298,6 +311,7 @@ def test_register_schema_and_sorting(primary_outputs):
 
 
 def test_queue_required_fields(primary_outputs):
+    """Queue rows carry exactly the contracted fields."""
     _, _, _, queue = primary_outputs
     for row in queue:
         assert set(row) == QUEUE_KEYS
@@ -306,6 +320,7 @@ def test_queue_required_fields(primary_outputs):
 
 
 def test_queue_sorted(primary_outputs):
+    """The queue is ordered by tier, then score, then total, as the board settled it."""
     _, _, _, queue = primary_outputs
     assert queue == sorted(
         queue,
@@ -324,6 +339,7 @@ def test_queue_sorted(primary_outputs):
 
 
 def test_exception_queue_jsonl_compact(primary_outputs):
+    """The queue is written as one compact JSON object per line."""
     out_dir, _, _, _ = primary_outputs
     for line in (out_dir / "exception_queue.jsonl").read_text(encoding="utf-8").splitlines():
         if not line.strip():
@@ -333,6 +349,7 @@ def test_exception_queue_jsonl_compact(primary_outputs):
 
 
 def test_bill_arithmetic_is_internally_consistent(primary_outputs):
+    """Each bill's own segment counts, days and totals agree with one another."""
     _, _, register, _ = primary_outputs
     for account, bills in register.items():
         for row in bills:
@@ -355,6 +372,7 @@ def test_bill_arithmetic_is_internally_consistent(primary_outputs):
 
 
 def test_summary_math_consistency(primary_outputs):
+    """The summary's totals agree with the artifacts emitted beside it."""
     _, summary, register, queue = primary_outputs
     bills = [row for rows in register.values() for row in rows]
     assert summary["bill_count"] == len(bills)
@@ -382,6 +400,7 @@ def test_summary_math_consistency(primary_outputs):
 
 
 def test_summary_read_counts_track_the_input(primary_outputs):
+    """The summary's read counts come from the meter reads actually supplied."""
     _, summary, _, _ = primary_outputs
     reads = _load_json(DEFAULT_INPUT)
     assert summary["raw_read_count"] == len(reads)
@@ -391,6 +410,7 @@ def test_summary_read_counts_track_the_input(primary_outputs):
 
 
 def test_tier_counts_enumerate_all_three(primary_outputs):
+    """The tier breakdown enumerates every documented tier and matches the queue."""
     _, summary, _, queue = primary_outputs
     counts = {tier: 0 for tier in TIER_ORDER}
     for row in queue:
@@ -403,12 +423,14 @@ def test_tier_counts_enumerate_all_three(primary_outputs):
 # Original / broken snapshot
 # --------------------------------------------------------------------------
 def test_original_snapshot_preserved():
+    """The frozen pre-incident biller is still on disk, unmodified."""
     assert ORIGINAL_WORKFLOW_PATH.exists()
     digest = hashlib.sha256(ORIGINAL_WORKFLOW_PATH.read_bytes()).hexdigest()
     assert digest == FIXTURE["broken_biller_sha256"]
 
 
 def test_broken_snapshot_is_wrong(tmp_path: Path):
+    """The shipped biller does not already produce the governed result."""
     _, broken_summary, broken_register, broken_queue = _run_pipeline(
         tmp_path, script_path=ORIGINAL_WORKFLOW_PATH
     )
@@ -421,12 +443,14 @@ def test_broken_snapshot_is_wrong(tmp_path: Path):
 # Generalization / idempotency / CLI
 # --------------------------------------------------------------------------
 def test_pipeline_rerun_idempotent(tmp_path: Path):
+    """Two runs over the same reads produce identical artifacts."""
     _, sa, ra, qa = _run_pipeline(tmp_path / "a")
     _, sb, rb, qb = _run_pipeline(tmp_path / "b")
     assert (sa, ra, qa) == (sb, rb, qb)
 
 
 def test_pipeline_supports_alternate_input(tmp_path: Path):
+    """A held-out set of meter reads produces the sealed result."""
     _, summary, register, queue = _run_pipeline(tmp_path, input_path=ALT_INPUT)
     assert summary == FIXTURE["alternate"]["summary"]
     assert _digest(register) == FIXTURE["alternate"]["register_digest"]
@@ -434,6 +458,7 @@ def test_pipeline_supports_alternate_input(tmp_path: Path):
 
 
 def test_cli_defaults_work_and_match_explicit_run(tmp_path: Path):
+    """Omitting the options uses the documented defaults."""
     _, explicit_summary, _, _ = _run_pipeline(tmp_path)
     # The no-argument run writes to the default /app/output; clear any root-owned artifacts from
     # solve.sh and make the dir candidate-writable so the unprivileged program can populate it.
@@ -445,37 +470,26 @@ def test_cli_defaults_work_and_match_explicit_run(tmp_path: Path):
     assert _load_json(default_out / "billing_summary.json") == explicit_summary
 
 
-def test_submitted_program_runs_unprivileged_and_cannot_write_reward(tmp_path: Path):
-    """The isolation itself works: code run the way the verifier runs the agent is unprivileged
-    (uid 65534) and cannot write the reward path."""
-    os.makedirs("/logs/verifier", exist_ok=True)
-    reward = Path("/logs/verifier/reward.txt")
-    if not reward.exists():
-        reward.write_text("0")
-    os.chmod("/logs/verifier", 0o755)
-    os.chmod(reward, 0o644)
+def test_submitted_program_runs_unprivileged(tmp_path: Path):
+    """Code run the way the verifier runs the agent executes as uid 65534.
+
+    Only the dropped privilege is asserted here. Whether a write to the reward
+    path is refused depends on the mode of /logs/verifier, which is set outside
+    this task, so it is not something the task can meaningfully claim.
+    """
     probe = _candidate_dir() / "probe.py"
-    probe.write_text(
-        "import os\n"
-        "print(os.getuid())\n"
-        "open('/logs/verifier/reward.txt', 'w').write('1')\n",
-        encoding="utf-8",
-    )
+    probe.write_text("import os\nprint(os.getuid())\n", encoding="utf-8")
     os.chmod(probe, 0o644)
     res = subprocess.run(
         _SETPRIV + [sys.executable, str(probe)],
         capture_output=True, text=True, cwd=str(_CWORK), check=False,
     )
-    assert res.stdout.strip().splitlines()[0] == "65534", "submitted program must run as uid 65534"
-    assert res.returncode != 0 and "Permission denied" in res.stderr, (
-        "unprivileged submitted program must not be able to write the reward path"
-    )
+    assert res.returncode == 0, res.stderr
+    assert res.stdout.strip() == "65534", "submitted program must run as uid 65534"
 
 
-# --------------------------------------------------------------------------
-# Source-path influence
-# --------------------------------------------------------------------------
 def test_register_source_path_affects_output(tmp_path: Path):
+    """The account register is resolved from its fixed path, not inlined."""
     original = REGISTER_PATH.read_text(encoding="utf-8")
     try:
         _, summary_a, register_a, queue_a = _run_pipeline(tmp_path / "a")
@@ -489,6 +503,7 @@ def test_register_source_path_affects_output(tmp_path: Path):
 
 
 def test_policy_source_path_affects_output(tmp_path: Path):
+    """The billing policy is resolved from its fixed path, not inlined."""
     original = POLICY_PATH.read_text()
     try:
         data = json.loads(original)
@@ -496,7 +511,7 @@ def test_policy_source_path_affects_output(tmp_path: Path):
         POLICY_PATH.write_text(json.dumps(data, indent=2) + "\n")
         _, summary, _, queue = _run_pipeline(tmp_path / "shifted")
         assert summary != FIXTURE["primary"]["summary"]
-        assert len(queue) < len(FIXTURE["primary"]["queue_digest"])
+        assert len(queue) < FIXTURE["primary"]["queue_count"]
     finally:
         POLICY_PATH.write_text(original)
 
@@ -514,6 +529,7 @@ def _resolve(service_class: str, data: dict) -> dict:
 
 
 def test_sparse_override_inherits_remaining_fields():
+    """An override naming one field changes that field alone."""
     data = json.loads(POLICY_PATH.read_text())
     overrides = data.get("class_overrides", {})
     sparse = [name for name, spec in overrides.items() if len(spec) == 1]
@@ -529,6 +545,7 @@ def test_sparse_override_inherits_remaining_fields():
 
 
 def test_policy_default_may_omit_fields_and_falls_back_to_baseline():
+    """A field the policy omits keeps the baseline the governance log states."""
     data = json.loads(POLICY_PATH.read_text())
     omitted = [f for f in POLICY_FIELDS if f not in data.get("default", {})]
     assert omitted, "the shipped policy must omit at least one field to exercise fallback"
@@ -538,6 +555,7 @@ def test_policy_default_may_omit_fields_and_falls_back_to_baseline():
 
 
 def test_tier_rules_follow_resolved_policy(primary_outputs):
+    """Each queued row is tiered by its own resolved policy values."""
     _, _, _, queue = primary_outputs
     data = json.loads(POLICY_PATH.read_text())
     for row in queue:
@@ -560,6 +578,7 @@ def test_tier_rules_follow_resolved_policy(primary_outputs):
 
 
 def test_admission_follows_resolved_policy(primary_outputs):
+    """Only rows clearing the resolved admission floor reach the queue."""
     _, _, register, queue = primary_outputs
     data = json.loads(POLICY_PATH.read_text())
     queued = {(row["account"], row["read_id"]) for row in queue}
@@ -575,6 +594,7 @@ def test_admission_follows_resolved_policy(primary_outputs):
 # Capacity cap
 # --------------------------------------------------------------------------
 def test_account_capacity_cap_applied_after_ordering(primary_outputs):
+    """The per-account cap is applied to the fully ordered queue, not during admission."""
     _, _, register, queue = primary_outputs
     per_account: dict[str, int] = {}
     for row in queue:
@@ -641,6 +661,7 @@ def _lab_read(read_id: str, start: str, end: str, kwh: int) -> dict:
 
 
 def test_bracket_boundary_is_inclusive_and_ceiling_prorated(tmp_path: Path):
+    """A read landing exactly on a bracket boundary falls inside it, and the proration ceilings."""
     original = RATE_TABLE_PATH.read_text(encoding="utf-8")
     try:
         _write_json(RATE_TABLE_PATH, _LAB_TABLE)
@@ -677,6 +698,7 @@ def test_bracket_boundary_is_inclusive_and_ceiling_prorated(tmp_path: Path):
 
 
 def test_minimum_bill_prorates_half_up_not_by_float_rounding(tmp_path: Path):
+    """The minimum bill prorates half-up in integer arithmetic rather than by float rounding."""
     table_original = RATE_TABLE_PATH.read_text(encoding="utf-8")
     policy_original = POLICY_PATH.read_text(encoding="utf-8")
     try:
@@ -710,6 +732,7 @@ def test_minimum_bill_prorates_half_up_not_by_float_rounding(tmp_path: Path):
 # Anti-delegation: integer minor units only
 # --------------------------------------------------------------------------
 def test_biller_does_not_import_money_types():
+    """The biller stays in integer minor units rather than delegating to a money or decimal type."""
     tree = ast.parse(WORKFLOW_PATH.read_text(encoding="utf-8"))
     banned = set(SPEC["workflow_repair"]["prohibited_imports"])
     found = set()
@@ -741,10 +764,28 @@ def test_ast_check_catches_decimal_importing_engine(tmp_path: Path):
 # Sources stay operational
 # --------------------------------------------------------------------------
 def test_governance_log_present():
+    """The minute book the rules are reconstructed from is in the environment."""
     assert LOG_PATH.exists() and LOG_PATH.stat().st_size > 0
 
 
 def test_biller_does_not_reference_test_artifacts():
-    code = WORKFLOW_PATH.read_text(encoding="utf-8")
+    """The biller derives its answer rather than reading anything verifier-side.
+
+    Only string literals are inspected, read from the parse tree: naming one of
+    these in a comment or a docstring is not a breach, using it as a path is.
+    """
+    literals = [node.value for node in ast.walk(ast.parse(WORKFLOW_PATH.read_text(encoding="utf-8")))
+                if isinstance(node, ast.Constant) and isinstance(node.value, str)]
     for token in ("/tests", "expected_report.json", "alt_meter_reads.json"):
-        assert token not in code
+        assert not any(token in literal for literal in literals), token
+
+
+def test_shipped_contract_matches_the_golden_copy():
+    """The output contract in the environment is unmodified.
+
+    Field lists, container shapes and sort orders are golden metadata and are read
+    from the verifier's own image; this proves the agent's copy still agrees with
+    it, so the contract cannot be trimmed to weaken a schema check.
+    """
+    shipped = json.loads(SPEC_PATH.read_text(encoding="utf-8"))
+    assert shipped == json.loads(GOLDEN_CONTRACT_PATH.read_text(encoding="utf-8"))
