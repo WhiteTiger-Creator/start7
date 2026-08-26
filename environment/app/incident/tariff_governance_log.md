@@ -518,7 +518,7 @@ No biller semantics changed in this entry; parameters remain as approved by the 
 
 ### Review entry 2120 — riverside (district 4) route
 Billing supervisor logged a routine observation for riverside (district 4) during billing cycle 2120. Meter-to-cash dashboard tiles lagged during the rate refresh; attributed to cache staleness, not the biller.
-> **Governance decision (2026-04-18 - #TAR-7360)** Lena: billing policy baseline (read from /app/data/billing_policies.json at that fixed absolute path; --input never relocates it). Any field the policy file omits keeps its baseline: admission_min = 240; escalate_total_cents = 1870000; escalate_score_min = 780; escalate_ratchet_min = 540; review_score_min = 430; review_bracket_min = 5; review_segment_min = 27; minimum_bill_cents = 1800; ratchet_percent = 80; levy_bps = 240
+> **Governance decision (2026-04-18 - #TAR-7360)** Lena: billing policy baseline (read from /app/data/billing_policies.json at that fixed absolute path; --input never relocates it). Any field the policy file omits keeps its baseline: admission_min = 240; escalate_total_cents = 1870000; escalate_score_min = 780; escalate_ratchet_min = 540; review_score_min = 430; review_bracket_min = 5; review_segment_min = 27; minimum_bill_cents = 1800; minimum_bill_days_basis = 30; ratchet_percent = 80; ratchet_lookback_periods = 3; levy_bps = 240
 Reviewers should reconcile behaviour questions against #TAR governance decisions rather than chat excerpts.
 
 ### Review entry 2121 — harbour (district 9) route

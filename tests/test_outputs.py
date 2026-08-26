@@ -259,8 +259,15 @@ def test_biller_output_depends_on_the_consolidated_table(tmp_path: Path):
 # Step 2: the biller output contract
 # --------------------------------------------------------------------------
 def test_cli_exists():
-    """The biller is present at the path the contract names."""
-    assert WORKFLOW_PATH.exists()
+    """The biller is present, non-empty and parseable at the path the contract names.
+
+    A precondition for everything below it: if this fails, the failures that follow
+    are all consequences of it rather than separate faults.
+    """
+    assert WORKFLOW_PATH.exists(), f"{WORKFLOW_PATH} is missing"
+    source = WORKFLOW_PATH.read_text(encoding="utf-8")
+    assert source.strip(), f"{WORKFLOW_PATH} is empty"
+    ast.parse(source)
 
 
 def test_output_dir_contains_exactly_three_files(primary_outputs):
@@ -693,6 +700,71 @@ def test_bracket_boundary_is_inclusive_and_ceiling_prorated(tmp_path: Path):
         assert second["energy_charge_cents"] == 1050
         # A FLOOR-prorated first ceiling (99*5//10 = 49) would bill 1090 instead.
         assert second["energy_charge_cents"] != 1090
+    finally:
+        RATE_TABLE_PATH.write_text(original, encoding="utf-8")
+
+
+def test_dirty_reads_are_coerced_as_the_contract_states(tmp_path: Path):
+    """The declared input coercions are applied, not assumed away.
+
+    report_spec.json and #TAR-7301 both spell out how a read's fields are cleaned
+    up before anything is billed. The graded meter-read file happens to be tidy,
+    so a biller that simply trusted the incoming types would agree with the sealed
+    fixtures and never be caught. These reads are deliberately not tidy.
+    """
+    original = RATE_TABLE_PATH.read_text(encoding="utf-8")
+    try:
+        _write_json(RATE_TABLE_PATH, _LAB_TABLE)
+        rows = [
+            # A numeric string is read as the number it spells.
+            dict(_lab_read("C-1", "2026-01-06", "2026-01-15", 0),
+                 consumption_kwh=" 100 ", estimated="YES"),
+            # A decimal string truncates towards zero rather than rounding.
+            dict(_lab_read("C-2", "2026-01-06", "2026-01-15", 0),
+                 consumption_kwh="100.9", estimated="1"),
+            # Anything that is not a number at all reads as zero.
+            dict(_lab_read("C-3", "2026-01-06", "2026-01-15", 0),
+                 consumption_kwh="not-a-number", estimated="no"),
+            # A negative consumption clamps up to zero instead of crediting the bill.
+            dict(_lab_read("C-4", "2026-01-06", "2026-01-15", 0),
+                 consumption_kwh=-250, peak_demand_kw=-7, estimated=False),
+            # The account is matched case- and whitespace-insensitively, so this read
+            # belongs to the same account as the others.
+            dict(_lab_read("C-5", "2026-01-06", "2026-01-15", 0),
+                 account="  LAB-Acct ", service_class=" Residential ",
+                 consumption_kwh=100, estimated=True),
+        ]
+        input_path = tmp_path / "coercion.json"
+        _write_json(input_path, rows)
+        _, _, register, _ = _run_pipeline(tmp_path / "run", input_path=input_path)
+
+        # All five landed under the one canonical account key.
+        assert set(register) == {"lab-acct"}, sorted(register)
+        bills = {row["read_id"]: row for row in register["lab-acct"]}
+        assert set(bills) == {"C-1", "C-2", "C-3", "C-4", "C-5"}
+
+        # " 100 " and 100 bill identically; "100.9" truncates to the same 100.
+        assert bills["C-1"]["consumption_kwh"] == 100
+        assert bills["C-2"]["consumption_kwh"] == 100
+        assert bills["C-5"]["consumption_kwh"] == 100
+        assert bills["C-1"]["energy_charge_cents"] == bills["C-5"]["energy_charge_cents"]
+        # Rounding 100.9 up to 101 would push a kWh into the dearer bracket.
+        assert bills["C-2"]["energy_charge_cents"] == bills["C-1"]["energy_charge_cents"]
+
+        # Unparseable and negative both floor at zero, and neither goes negative.
+        assert bills["C-3"]["consumption_kwh"] == 0
+        assert bills["C-4"]["consumption_kwh"] == 0
+        assert bills["C-4"]["peak_demand_kw"] == 0
+        assert bills["C-3"]["energy_charge_cents"] == 0
+        assert bills["C-4"]["energy_charge_cents"] == 0
+        assert all(row["total_due_cents"] >= 0 for row in bills.values())
+
+        # true/1/yes are true, every other string is false, booleans pass through.
+        assert bills["C-1"]["estimated"] is True
+        assert bills["C-2"]["estimated"] is True
+        assert bills["C-5"]["estimated"] is True
+        assert bills["C-3"]["estimated"] is False
+        assert bills["C-4"]["estimated"] is False
     finally:
         RATE_TABLE_PATH.write_text(original, encoding="utf-8")
 
