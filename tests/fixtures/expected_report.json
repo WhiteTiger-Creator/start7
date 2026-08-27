@@ -1,71 +1,71 @@
 {
-  "primary": {
-    "summary": {
-      "schema_version": "tariff-bill-v1",
-      "raw_read_count": 60880,
-      "unique_read_ids": 60180,
-      "dropped_read_count": 184,
-      "canonical_read_count": 60000,
-      "account_count": 8993,
-      "bill_count": 60000,
-      "estimated_bill_count": 4194,
-      "schedule_version_count": 2541,
-      "tier_counts": {
-        "escalate": 6590,
-        "review": 6325,
-        "watch": 3044
-      },
-      "total_energy_charge_cents": 27503206855,
-      "total_demand_charge_cents": 20943290896,
-      "total_standing_charge_cents": 280946467,
-      "total_levy_cents": 1300185947,
-      "total_due_cents": 50028233549,
-      "minimum_applied_count": 37,
-      "queued_bill_count": 15959,
-      "max_exception_score": 1219,
-      "max_total_due_cents": 3039566,
-      "max_ratchet_uplift_kw": 718,
-      "largest_bill_cents": 3039566
-    },
-    "register_digest": "1ec8dd30dd649f5ba7b21b322db7d68387040b25c13547769faea041d217fbb2",
-    "queue_digest": "efcbacef96330dfc81128200b9251bc2bb56e6ea3ed78a18ff056aa1ca8860a4",
-    "queue_count": 15959
-  },
   "alternate": {
+    "queue_count": 14304,
+    "queue_digest": "b624b0e83c35242999cd83870ef3152e867793d8d50993114adbacb1ca5e5de1",
+    "register_digest": "d45d266522274a8663c6ef765ac2ee651ccce4753ad87ba9a1f138b8d085fd2a",
     "summary": {
-      "schema_version": "tariff-bill-v1",
-      "raw_read_count": 60880,
-      "unique_read_ids": 60180,
-      "dropped_read_count": 184,
-      "canonical_read_count": 60000,
       "account_count": 8987,
       "bill_count": 60000,
+      "canonical_read_count": 60000,
+      "dropped_read_count": 184,
       "estimated_bill_count": 4076,
-      "schedule_version_count": 2541,
-      "tier_counts": {
-        "escalate": 5424,
-        "review": 8518,
-        "watch": 2445
-      },
-      "total_energy_charge_cents": 27615774867,
-      "total_demand_charge_cents": 21072982257,
-      "total_standing_charge_cents": 280143457,
-      "total_levy_cents": 1285390398,
-      "total_due_cents": 50261112654,
-      "minimum_applied_count": 452,
-      "queued_bill_count": 16387,
-      "max_exception_score": 1277,
-      "max_total_due_cents": 3052226,
+      "largest_bill_cents": 2006872,
+      "max_exception_score": 803,
       "max_ratchet_uplift_kw": 718,
-      "largest_bill_cents": 3052226
-    },
-    "register_digest": "726c9115b47191ca0c2fc47a5ca3329a28172ea359b6de623301fe95d14706e8",
-    "queue_digest": "c971b559065223e000960058005b49ac54ba9083316f45cc37901a8853d6dab3",
-    "queue_count": 16387
+      "max_total_due_cents": 2006872,
+      "minimum_applied_count": 452,
+      "queued_bill_count": 14304,
+      "raw_read_count": 60880,
+      "schedule_version_count": 2541,
+      "schema_version": "tariff-bill-v1",
+      "tier_counts": {
+        "escalate": 4559,
+        "review": 6689,
+        "watch": 3056
+      },
+      "total_demand_charge_cents": 21072982257,
+      "total_due_cents": 41277075669,
+      "total_energy_charge_cents": 18856373115,
+      "total_levy_cents": 1060755165,
+      "total_standing_charge_cents": 280143457,
+      "unique_read_ids": 60180
+    }
   },
-  "consolidated_table_digest": "33345a0f9f66759f0db29c866d7d0f08f843b136c0c80609b8aa9f68f739d76b",
-  "base_tariff_digest": "b5a76533401ba11707043a779d3ee8c9792bf6a4c190c895bd78f4a474067d9a",
   "amendment_filings_digest": "91efefe4fc6cfc6d1da527fcd74ecd473900c273644746c224bfd7e9853eab45",
-  "shipped_stale_table_digest": "74f80bb487443eab4d3435b6cd2fd3815640fe5aad1f4f674ef3b5ef106106f0",
-  "broken_biller_sha256": "41155502cd78976950e1f2c7b4be64656a51363041592ef58aff5ef454159ae0"
+  "base_tariff_digest": "b5a76533401ba11707043a779d3ee8c9792bf6a4c190c895bd78f4a474067d9a",
+  "broken_biller_sha256": "41155502cd78976950e1f2c7b4be64656a51363041592ef58aff5ef454159ae0",
+  "consolidated_table_digest": "33345a0f9f66759f0db29c866d7d0f08f843b136c0c80609b8aa9f68f739d76b",
+  "primary": {
+    "queue_count": 14215,
+    "queue_digest": "0da461122b3a806311bd5dadca7812219f5427453645983594aced33b9adadce",
+    "register_digest": "14c4e0715be1a8b493d7a09fd993b8efef02555ac7abc3389b999a8a2e7c001c",
+    "summary": {
+      "account_count": 8993,
+      "bill_count": 60000,
+      "canonical_read_count": 60000,
+      "dropped_read_count": 184,
+      "estimated_bill_count": 4194,
+      "largest_bill_cents": 2036982,
+      "max_exception_score": 816,
+      "max_ratchet_uplift_kw": 718,
+      "max_total_due_cents": 2036982,
+      "minimum_applied_count": 37,
+      "queued_bill_count": 14215,
+      "raw_read_count": 60880,
+      "schedule_version_count": 2541,
+      "schema_version": "tariff-bill-v1",
+      "tier_counts": {
+        "escalate": 5867,
+        "review": 5126,
+        "watch": 3222
+      },
+      "total_demand_charge_cents": 20943290896,
+      "total_due_cents": 41098529972,
+      "total_energy_charge_cents": 18796163029,
+      "total_levy_cents": 1077526196,
+      "total_standing_charge_cents": 280946467,
+      "unique_read_ids": 60180
+    }
+  },
+  "shipped_stale_table_digest": "74f80bb487443eab4d3435b6cd2fd3815640fe5aad1f4f674ef3b5ef106106f0"
 }

@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse
 import bisect
 import json
+import re
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -77,17 +78,20 @@ def collapse_ws(value: object) -> str:
 
 
 def coerce_int(value: object) -> int:
-    if isinstance(value, bool):
-        return int(value)
-    if isinstance(value, int):
+    # report_spec.json states the conversion as int(str(value).strip()), so a
+    # boolean goes through str() like anything else -- "True" is not a number and
+    # falls through to the zero the contract names, rather than to 1.
+    if isinstance(value, int) and not isinstance(value, bool):
         return value
     text = str(value).strip()
     try:
         return int(text)
     except ValueError:
         try:
+            # int(float("1e999")) raises OverflowError rather than ValueError,
+            # and the contract's floor is zero however the conversion fails.
             return int(float(text))
-        except ValueError:
+        except (ValueError, OverflowError):
             return 0
 
 
@@ -99,9 +103,18 @@ def coerce_flag(value: object) -> bool:
     return bool(value)
 
 
+_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
 def coerce_date(value: object) -> date | None:
+    # report_spec.json gives one format, YYYY-MM-DD. date.fromisoformat also
+    # accepts the compact "20260106" and the week form "2026-W02-1", which the
+    # contract does not name, so they are not dates here.
+    text = str(value).strip()
+    if not _DATE_RE.match(text):
+        return None
     try:
-        return date.fromisoformat(str(value).strip())
+        return date.fromisoformat(text)
     except ValueError:
         return None
 
@@ -299,17 +312,35 @@ def bracket_charge(
     charge = 0
     used: list[str] = []
     previous = 0
+    closed = False
     for bracket in brackets:
         upper = bracket["upper_kwh"]
         if upper is None:
+            # #TAR-7372: unbounded brackets do not stack. The first one reached
+            # takes what remains and closes the walk, so a schedule left with two
+            # or more of them does not bill the same energy twice.
             take = max(kwh - previous, 0)
-        else:
-            prorated = _ceil_div(upper * seg_days, total_days)
-            take = max(min(kwh, prorated) - previous, 0)
-            previous = max(previous, prorated)
+            if take > 0:
+                charge += take * bracket["rate_per_kwh_cents"]
+                used.append(bracket["bracket_id"])
+            closed = True
+            break
+        prorated = _ceil_div(upper * seg_days, total_days)
+        take = max(min(kwh, prorated) - previous, 0)
+        previous = max(previous, prorated)
         if take > 0:
             charge += take * bracket["rate_per_kwh_cents"]
             used.append(bracket["bracket_id"])
+    if not closed and brackets:
+        # #TAR-7372: with no unbounded bracket the energy above the last ceiling
+        # is not free -- the last bracket's rate carries it, and that bracket is
+        # reported whether or not it charged inside its own ceiling.
+        remainder = max(kwh - previous, 0)
+        if remainder > 0:
+            last = brackets[-1]
+            charge += remainder * last["rate_per_kwh_cents"]
+            if last["bracket_id"] not in used:
+                used.append(last["bracket_id"])
     return charge, used
 
 

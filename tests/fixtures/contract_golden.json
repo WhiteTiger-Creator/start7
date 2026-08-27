@@ -9,28 +9,45 @@
       "service_class_register": "/app/data/service_class_register.json",
       "billing_policies": "/app/data/billing_policies.json"
     },
-    "prohibited_imports": ["decimal", "fractions", "pandas", "numpy"]
+    "prohibited_imports": [
+      "decimal",
+      "fractions",
+      "pandas",
+      "numpy"
+    ]
   },
   "consolidation_output": {
     "output_path": "/app/data/effective_rate_table.json",
     "container": "object",
-    "required_fields": ["tariff_id", "schedules"],
+    "required_fields": [
+      "tariff_id",
+      "schedules"
+    ],
     "schedules": {
       "container": "array of schedule objects",
       "item_sort": "effective_from ascending",
-      "required_fields": ["effective_from", "classes"]
+      "required_fields": [
+        "effective_from",
+        "classes"
+      ]
     },
     "schedule_classes": {
       "container": "object keyed by service class name",
       "key_sort": "ascending",
       "required_fields": [
-        "brackets", "demand_rate_cents_per_kw", "standing_charge_cents_per_day"
+        "brackets",
+        "demand_rate_cents_per_kw",
+        "standing_charge_cents_per_day"
       ]
     },
     "brackets": {
       "container": "array of bracket objects",
-      "item_sort": "upper_kwh ascending with the unbounded bracket last, ties by bracket_id ascending",
-      "required_fields": ["bracket_id", "upper_kwh", "rate_per_kwh_cents"]
+      "item_sort": "upper_kwh ascending with the unbounded brackets last, ties by bracket_id ascending; a schedule may carry more than one unbounded bracket, or none",
+      "required_fields": [
+        "bracket_id",
+        "upper_kwh",
+        "rate_per_kwh_cents"
+      ]
     }
   },
   "output_files": {
@@ -52,21 +69,72 @@
       "type": "boolean",
       "input_coercion": "booleans unchanged; strings true/1/yes after str(...).strip().lower() -> true; other strings -> false; other types -> bool(value)"
     },
-    "period_start": {"type": "string", "format": "YYYY-MM-DD"},
-    "period_end": {"type": "string", "format": "YYYY-MM-DD"},
-    "effective_from": {"type": "string", "format": "YYYY-MM-DD"},
-    "account": {"type": "string"},
-    "read_id": {"type": "string"},
-    "service_class": {"type": "string"},
-    "upper_kwh": {"type": ["integer", "null"]},
-    "minimum_applied": {"type": "boolean"},
-    "tier": {"type": "string", "enum": ["escalate", "review", "watch"]},
-    "tier_counts": {"type": "object", "keys": ["escalate", "review", "watch"]},
-    "bracket_ids": {"type": "array", "items": "string", "order": "ascending"},
-    "schedule_versions_applied": {"type": "array", "items": "string", "order": "ascending"},
-    "segment_days": {"type": "array", "items": "integer", "order": "chronological by segment"},
+    "period_start": {
+      "type": "string",
+      "format": "YYYY-MM-DD"
+    },
+    "period_end": {
+      "type": "string",
+      "format": "YYYY-MM-DD"
+    },
+    "effective_from": {
+      "type": "string",
+      "format": "YYYY-MM-DD"
+    },
+    "account": {
+      "type": "string"
+    },
+    "read_id": {
+      "type": "string",
+      "input_coercion": "internal whitespace runs collapse to a single space; the collapsed form is the identity a read is deduplicated on and the one reported"
+    },
+    "service_class": {
+      "type": "string"
+    },
+    "upper_kwh": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "minimum_applied": {
+      "type": "boolean"
+    },
+    "tier": {
+      "type": "string",
+      "enum": [
+        "escalate",
+        "review",
+        "watch"
+      ]
+    },
+    "tier_counts": {
+      "type": "object",
+      "keys": [
+        "escalate",
+        "review",
+        "watch"
+      ]
+    },
+    "bracket_ids": {
+      "type": "array",
+      "items": "string",
+      "order": "ascending"
+    },
+    "schedule_versions_applied": {
+      "type": "array",
+      "items": "string",
+      "order": "ascending"
+    },
+    "segment_days": {
+      "type": "array",
+      "items": "integer",
+      "order": "chronological by segment"
+    },
     "segment_consumption_kwh": {
-      "type": "array", "items": "integer", "order": "chronological by segment"
+      "type": "array",
+      "items": "integer",
+      "order": "chronological by segment"
     }
   },
   "bill_register": {
@@ -75,12 +143,32 @@
     "key_sort": "ascending",
     "item_sort": "period_start ascending then read_id ascending",
     "required_fields": [
-      "read_id", "service_class", "period_start", "period_end", "billed_days",
-      "segment_count", "segment_days", "segment_consumption_kwh", "consumption_kwh",
-      "peak_demand_kw", "ratchet_floor_kw", "billed_demand_kw", "ratchet_uplift_kw",
-      "bracket_ids", "bracket_span", "schedule_versions_applied", "energy_charge_cents",
-      "demand_charge_cents", "standing_charge_cents", "subtotal_cents", "minimum_applied",
-      "billed_subtotal_cents", "levy_cents", "total_due_cents", "estimated", "exception_score"
+      "read_id",
+      "service_class",
+      "period_start",
+      "period_end",
+      "billed_days",
+      "segment_count",
+      "segment_days",
+      "segment_consumption_kwh",
+      "consumption_kwh",
+      "peak_demand_kw",
+      "ratchet_floor_kw",
+      "billed_demand_kw",
+      "ratchet_uplift_kw",
+      "bracket_ids",
+      "bracket_span",
+      "schedule_versions_applied",
+      "energy_charge_cents",
+      "demand_charge_cents",
+      "standing_charge_cents",
+      "subtotal_cents",
+      "minimum_applied",
+      "billed_subtotal_cents",
+      "levy_cents",
+      "total_due_cents",
+      "estimated",
+      "exception_score"
     ]
   },
   "exception_queue": {
@@ -88,13 +176,35 @@
     "container": "one compact JSON object per line, json.dumps(..., separators=(',', ':'))",
     "bill_id_format": "{account}:{read_id}:{period_start}",
     "required_fields": [
-      "bill_id", "account", "read_id", "service_class", "period_start", "period_end",
-      "billed_days", "segment_count", "segment_days", "segment_consumption_kwh",
-      "consumption_kwh", "peak_demand_kw", "ratchet_floor_kw", "billed_demand_kw",
-      "ratchet_uplift_kw", "bracket_ids", "bracket_span", "schedule_versions_applied",
-      "energy_charge_cents", "demand_charge_cents", "standing_charge_cents",
-      "subtotal_cents", "minimum_applied", "billed_subtotal_cents", "levy_cents",
-      "total_due_cents", "estimated", "exception_score", "tier"
+      "bill_id",
+      "account",
+      "read_id",
+      "service_class",
+      "period_start",
+      "period_end",
+      "billed_days",
+      "segment_count",
+      "segment_days",
+      "segment_consumption_kwh",
+      "consumption_kwh",
+      "peak_demand_kw",
+      "ratchet_floor_kw",
+      "billed_demand_kw",
+      "ratchet_uplift_kw",
+      "bracket_ids",
+      "bracket_span",
+      "schedule_versions_applied",
+      "energy_charge_cents",
+      "demand_charge_cents",
+      "standing_charge_cents",
+      "subtotal_cents",
+      "minimum_applied",
+      "billed_subtotal_cents",
+      "levy_cents",
+      "total_due_cents",
+      "estimated",
+      "exception_score",
+      "tier"
     ]
   },
   "billing_summary": {
@@ -102,15 +212,33 @@
     "container": "object",
     "schema_version": "tariff-bill-v1",
     "required_fields": [
-      "schema_version", "raw_read_count", "unique_read_ids", "dropped_read_count",
-      "canonical_read_count", "account_count", "bill_count", "estimated_bill_count",
-      "schedule_version_count", "tier_counts", "total_energy_charge_cents",
-      "total_demand_charge_cents", "total_standing_charge_cents", "total_levy_cents",
-      "total_due_cents", "minimum_applied_count", "queued_bill_count",
-      "max_exception_score", "max_total_due_cents", "max_ratchet_uplift_kw",
+      "schema_version",
+      "raw_read_count",
+      "unique_read_ids",
+      "dropped_read_count",
+      "canonical_read_count",
+      "account_count",
+      "bill_count",
+      "estimated_bill_count",
+      "schedule_version_count",
+      "tier_counts",
+      "total_energy_charge_cents",
+      "total_demand_charge_cents",
+      "total_standing_charge_cents",
+      "total_levy_cents",
+      "total_due_cents",
+      "minimum_applied_count",
+      "queued_bill_count",
+      "max_exception_score",
+      "max_total_due_cents",
+      "max_ratchet_uplift_kw",
       "largest_bill_cents"
     ],
-    "tier_counts_key_order": ["escalate", "review", "watch"]
+    "tier_counts_key_order": [
+      "escalate",
+      "review",
+      "watch"
+    ]
   },
   "meter_read_source": {
     "path": "/app/data/meter_reads.json",
@@ -123,8 +251,17 @@
   "amendment_filings_source": {
     "path": "/app/data/amendment_filings.json",
     "shape": "[{\"filing_id\": str, \"docket\": str, \"filed_on\": str, \"effective_date\": str, \"status\": str, \"service_class\": str, \"operation\": str, \"bracket\": {\"bracket_id\": str, \"upper_kwh\": int|null, \"rate_per_kwh_cents\": int}?, \"bracket_id\": str?, \"demand_rate_cents_per_kw\": int?, \"rationale\": str}, ...]",
-    "status_values": ["approved", "pending", "withdrawn"],
-    "operation_values": ["replace-bracket", "add-bracket", "retire-bracket", "adjust-demand-charge"]
+    "status_values": [
+      "approved",
+      "pending",
+      "withdrawn"
+    ],
+    "operation_values": [
+      "replace-bracket",
+      "add-bracket",
+      "retire-bracket",
+      "adjust-demand-charge"
+    ]
   },
   "service_class_register_source": {
     "path": "/app/data/service_class_register.json",

@@ -733,6 +733,17 @@ def test_dirty_reads_are_coerced_as_the_contract_states(tmp_path: Path):
             dict(_lab_read("C-5", "2026-01-06", "2026-01-15", 0),
                  account="  LAB-Acct ", service_class=" Residential ",
                  consumption_kwh=100, estimated=True),
+            # A boolean is not a number: the contract converts through
+            # int(str(value).strip()), under which "True" fails both conversions
+            # and falls to the zero it names -- not to the 1 that bool is worth
+            # in Python arithmetic.
+            dict(_lab_read("C-6", "2026-01-06", "2026-01-15", 0),
+                 consumption_kwh=True, peak_demand_kw=True, estimated=False),
+            # A magnitude no integer can hold: int(float("1e999")) raises
+            # OverflowError rather than ValueError, and the contract's floor is
+            # zero however the conversion fails.
+            dict(_lab_read("C-7", "2026-01-06", "2026-01-15", 0),
+                 consumption_kwh="1e999", peak_demand_kw="-1e999", estimated=False),
         ]
         input_path = tmp_path / "coercion.json"
         _write_json(input_path, rows)
@@ -741,7 +752,7 @@ def test_dirty_reads_are_coerced_as_the_contract_states(tmp_path: Path):
         # All five landed under the one canonical account key.
         assert set(register) == {"lab-acct"}, sorted(register)
         bills = {row["read_id"]: row for row in register["lab-acct"]}
-        assert set(bills) == {"C-1", "C-2", "C-3", "C-4", "C-5"}
+        assert set(bills) == {"C-1", "C-2", "C-3", "C-4", "C-5", "C-6", "C-7"}
 
         # " 100 " and 100 bill identically; "100.9" truncates to the same 100.
         assert bills["C-1"]["consumption_kwh"] == 100
@@ -759,6 +770,15 @@ def test_dirty_reads_are_coerced_as_the_contract_states(tmp_path: Path):
         assert bills["C-4"]["energy_charge_cents"] == 0
         assert all(row["total_due_cents"] >= 0 for row in bills.values())
 
+        # A boolean is worth nothing as a number, and neither is a magnitude that
+        # overflows: both floor at zero rather than at 1 or at a crash.
+        assert bills["C-6"]["consumption_kwh"] == 0
+        assert bills["C-6"]["peak_demand_kw"] == 0
+        assert bills["C-6"]["energy_charge_cents"] == 0
+        assert bills["C-7"]["consumption_kwh"] == 0
+        assert bills["C-7"]["peak_demand_kw"] == 0
+        assert bills["C-7"]["energy_charge_cents"] == 0
+
         # true/1/yes are true, every other string is false, booleans pass through.
         assert bills["C-1"]["estimated"] is True
         assert bills["C-2"]["estimated"] is True
@@ -767,6 +787,135 @@ def test_dirty_reads_are_coerced_as_the_contract_states(tmp_path: Path):
         assert bills["C-4"]["estimated"] is False
     finally:
         RATE_TABLE_PATH.write_text(original, encoding="utf-8")
+
+
+def test_a_date_outside_the_contracts_format_is_not_a_date(tmp_path: Path):
+    """report_spec.json gives one date format, and date.fromisoformat accepts more.
+
+    A compact "20260106" and a week date "2026-W02-1" both parse in Python and
+    neither is the YYYY-MM-DD the contract names, so a biller that simply handed
+    the string to date.fromisoformat would bill a period the read never stated.
+    A read without both dates is dropped under #TAR-7301.
+    """
+    original = RATE_TABLE_PATH.read_text(encoding="utf-8")
+    try:
+        _write_json(RATE_TABLE_PATH, _LAB_TABLE)
+        rows = [
+            _lab_read("D-1", "2026-01-06", "2026-01-15", 100),
+            _lab_read("D-2", "20260106", "2026-01-15", 100),
+            _lab_read("D-3", "2026-01-06", "20260115", 100),
+            _lab_read("D-4", "2026-W02-1", "2026-01-15", 100),
+        ]
+        input_path = tmp_path / "dates.json"
+        _write_json(input_path, rows)
+        _, summary, register, _ = _run_pipeline(tmp_path / "run", input_path=input_path)
+        assert summary["raw_read_count"] == 4
+        assert summary["dropped_read_count"] == 3, "a non-conforming date was accepted as a date"
+        assert summary["canonical_read_count"] == 1
+        assert [row["read_id"] for row in register["lab-acct"]] == ["D-1"]
+    finally:
+        RATE_TABLE_PATH.write_text(original, encoding="utf-8")
+
+
+def test_a_read_id_is_matched_on_its_collapsed_form(tmp_path: Path):
+    """report_spec.json collapses a read_id's whitespace, and the identity follows it.
+
+    Two reads whose identifiers differ only in spacing are the same read, so they
+    deduplicate against each other under #TAR-7302 and the bill carries the
+    collapsed form rather than whichever spelling arrived.
+    """
+    original = RATE_TABLE_PATH.read_text(encoding="utf-8")
+    try:
+        _write_json(RATE_TABLE_PATH, _LAB_TABLE)
+        rows = [
+            dict(_lab_read("R  1", "2026-01-06", "2026-01-15", 100)),
+            dict(_lab_read("  R 1 ", "2026-01-07", "2026-01-16", 100)),
+            dict(_lab_read("R-2", "2026-01-06", "2026-01-15", 100)),
+        ]
+        input_path = tmp_path / "read_ids.json"
+        _write_json(input_path, rows)
+        _, summary, register, _ = _run_pipeline(tmp_path / "run", input_path=input_path)
+        assert summary["raw_read_count"] == 3
+        assert summary["unique_read_ids"] == 2, "the two spellings were treated as two reads"
+        ids = [row["read_id"] for row in register["lab-acct"]]
+        assert sorted(ids) == ["R 1", "R-2"], ids
+        # the later period_end wins the duplicate under #TAR-7302
+        kept = next(row for row in register["lab-acct"] if row["read_id"] == "R 1")
+        assert kept["period_end"] == "2026-01-16"
+    finally:
+        RATE_TABLE_PATH.write_text(original, encoding="utf-8")
+
+
+_STACKED_TABLE = {
+    "tariff_id": "LAB-STACK",
+    "schedules": [{
+        "effective_from": "2026-01-01",
+        "classes": {"residential": {
+            "brackets": [
+                {"bracket_id": "S-A", "upper_kwh": 100, "rate_per_kwh_cents": 10},
+                {"bracket_id": "S-B", "upper_kwh": None, "rate_per_kwh_cents": 50},
+                {"bracket_id": "S-C", "upper_kwh": None, "rate_per_kwh_cents": 70},
+            ],
+            "demand_rate_cents_per_kw": 0,
+            "standing_charge_cents_per_day": 0,
+        }},
+    }],
+}
+
+_CAPPED_TABLE = {
+    "tariff_id": "LAB-CAP",
+    "schedules": [{
+        "effective_from": "2026-01-01",
+        "classes": {"residential": {
+            "brackets": [
+                {"bracket_id": "C-A", "upper_kwh": 100, "rate_per_kwh_cents": 10},
+                {"bracket_id": "C-B", "upper_kwh": 200, "rate_per_kwh_cents": 50},
+            ],
+            "demand_rate_cents_per_kw": 0,
+            "standing_charge_cents_per_day": 0,
+        }},
+    }],
+}
+
+
+def _one_read_bill(tmp_path: Path, table: dict, kwh: int, label: str) -> dict:
+    original = RATE_TABLE_PATH.read_text(encoding="utf-8")
+    try:
+        _write_json(RATE_TABLE_PATH, table)
+        input_path = tmp_path / f"{label}.json"
+        _write_json(input_path, [_lab_read(label.upper(), "2026-01-06", "2026-01-15", kwh)])
+        _, _, register, _ = _run_pipeline(tmp_path / label, input_path=input_path)
+        return register["lab-acct"][0]
+    finally:
+        RATE_TABLE_PATH.write_text(original, encoding="utf-8")
+
+
+def test_unbounded_brackets_do_not_stack(tmp_path: Path):
+    """#TAR-7372: consolidation can leave two unbounded brackets, and only the first charges.
+
+    The filings can replace a bracket with one carrying no ceiling, so a
+    consolidated schedule holds more than one. Charging the remainder once per
+    unbounded bracket bills the same energy twice: here 300 kWh would cost
+    1000 + 10000 + 14000 instead of the governed 1000 + 10000.
+    """
+    bill = _one_read_bill(tmp_path, _STACKED_TABLE, 300, "stack")
+    assert bill["energy_charge_cents"] == 100 * 10 + 200 * 50
+    assert bill["bracket_ids"] == ["S-A", "S-B"], bill["bracket_ids"]
+
+
+def test_a_schedule_with_no_unbounded_bracket_charges_the_remainder_at_its_top_rate(tmp_path: Path):
+    """#TAR-7372: the filings can retire the unbounded bracket, and the energy above it is not free.
+
+    With the top of the schedule closed at 200 kWh, the 100 kWh above it is
+    charged at the last bracket's rate rather than dropped, and that bracket is
+    reported.
+    """
+    bill = _one_read_bill(tmp_path, _CAPPED_TABLE, 300, "capped")
+    assert bill["energy_charge_cents"] == 100 * 10 + 100 * 50 + 100 * 50
+    assert bill["bracket_ids"] == ["C-A", "C-B"], bill["bracket_ids"]
+
+    inside = _one_read_bill(tmp_path, _CAPPED_TABLE, 150, "capped_inside")
+    assert inside["energy_charge_cents"] == 100 * 10 + 50 * 50
 
 
 def test_minimum_bill_prorates_half_up_not_by_float_rounding(tmp_path: Path):
@@ -803,6 +952,73 @@ def test_minimum_bill_prorates_half_up_not_by_float_rounding(tmp_path: Path):
 # --------------------------------------------------------------------------
 # Anti-delegation: integer minor units only
 # --------------------------------------------------------------------------
+def _imported_roots(source: str) -> set:
+    """Top-level module names the source imports, read from the parse tree."""
+    roots = set()
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                roots.add(alias.name.split(".")[0])
+        elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
+            roots.add(node.module.split(".")[0])
+    return roots
+
+
+def test_biller_imports_only_the_standard_library():
+    """instruction.md says standard library only, and the named bans are not that.
+
+    The ban below covers the four modules the contract names for a reason of its
+    own -- money and decimal types. It says nothing about a third-party package,
+    which is what "standard library only" is actually about, and relying on the
+    image simply not carrying one makes the rule an accident of the image rather
+    than something the task states and grades.
+    """
+    found = _imported_roots(WORKFLOW_PATH.read_text(encoding="utf-8"))
+    local = {path.stem for path in WORKFLOW_PATH.parent.glob("*.py")}
+    outside = {name for name in found
+               if name not in sys.stdlib_module_names and name not in local}
+    assert not outside, f"the biller imports outside the standard library: {sorted(outside)}"
+
+
+def test_the_standard_library_check_catches_a_third_party_import(tmp_path: Path):
+    """The check above is real: an engine reaching for a package is detected."""
+    shim = tmp_path / "vendored_engine.py"
+    shim.write_text("import json\nimport pandas as pd\nfrom numpy import array\n")
+    found = _imported_roots(shim.read_text())
+    assert {"pandas", "numpy"} <= found
+    assert {name for name in found if name not in sys.stdlib_module_names} == {"pandas", "numpy"}
+
+
+def test_biller_does_not_load_modules_dynamically():
+    """A module loaded at run time is not an import the scan above can see.
+
+    importlib, __import__ and the compile/eval/exec family each reach a module or
+    a body of code the parse tree never names, which would leave the standard
+    library rule enforceable only by trust.
+    """
+    source = WORKFLOW_PATH.read_text(encoding="utf-8")
+    assert "importlib" not in _imported_roots(source), "the biller imports importlib"
+    called = {node.func.id for node in ast.walk(ast.parse(source))
+              if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)}
+    attributes = {node.attr for node in ast.walk(ast.parse(source))
+                  if isinstance(node, ast.Attribute)}
+    banned = {"__import__", "eval", "exec", "compile"}
+    assert not (banned & called), f"the biller loads code at run time: {sorted(banned & called)}"
+    assert "import_module" not in attributes, "the biller loads a module at run time"
+
+
+def test_the_dynamic_loading_check_catches_an_import_module_call(tmp_path: Path):
+    """The dynamic-loading check is real: an importlib shim is detected."""
+    shim = tmp_path / "dynamic_engine.py"
+    shim.write_text("import importlib\n\n\ndef rate():\n"
+                    "    return importlib.import_module('decimal').Decimal(1)\n")
+    source = shim.read_text()
+    attributes = {node.attr for node in ast.walk(ast.parse(source))
+                  if isinstance(node, ast.Attribute)}
+    assert "importlib" in _imported_roots(source)
+    assert "import_module" in attributes
+
+
 def test_biller_does_not_import_money_types():
     """The biller stays in integer minor units rather than delegating to a money or decimal type."""
     tree = ast.parse(WORKFLOW_PATH.read_text(encoding="utf-8"))
