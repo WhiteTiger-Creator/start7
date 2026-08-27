@@ -81,7 +81,21 @@ def _load_json(path: Path):
 
 
 def _load_jsonl(path: Path):
-    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+    """Read a contracted JSONL artifact, taking every line as written.
+
+    Skipping blank lines here softened a contract that says one compact object
+    per line: a run that padded its queue with empty lines read back the same as
+    a clean one and scored full marks. A blank line is a malformed line and is
+    read as one.
+    """
+    text = path.read_text(encoding="utf-8")
+    if not text:
+        return []
+    assert text.endswith("\n"), f"{path.name} has no trailing newline"
+    lines = text.split("\n")[:-1]
+    for number, line in enumerate(lines, start=1):
+        assert line.strip(), f"{path.name} line {number} is blank"
+    return [json.loads(line) for line in lines]
 
 
 def _write_json(path: Path, value: object) -> None:
@@ -406,9 +420,11 @@ def test_queue_sorted(primary_outputs):
 def test_exception_queue_jsonl_compact(primary_outputs):
     """The queue is written as one compact JSON object per line."""
     out_dir, _, _, _ = primary_outputs
-    for line in (out_dir / "exception_queue.jsonl").read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
+    raw = (out_dir / "exception_queue.jsonl").read_text(encoding="utf-8")
+    assert raw.endswith("\n") and not raw.endswith("\n\n"), "the queue does not end in one newline"
+    for number, line in enumerate(raw.split("\n")[:-1], start=1):
+        # every line as written: a blank one is not skipped, it is a failure
+        assert line.strip(), f"queue line {number} is blank"
         assert ": " not in line
         assert json.dumps(json.loads(line), separators=(",", ":")) == line
 
