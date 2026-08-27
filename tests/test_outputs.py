@@ -8,8 +8,11 @@ import itertools
 import json
 import os
 import shutil
+import signal
 import subprocess
 import sys
+import tempfile
+import time
 from pathlib import Path
 
 import pytest
@@ -101,18 +104,73 @@ _CANDIDATE_TIMEOUT = 300
 
 
 def _candidate_dir() -> Path:
-    directory = _CWORK / f"run-{next(_run_ctr)}"
-    directory.mkdir(parents=True, exist_ok=True)
+    """A fresh work area for one run, created where nothing can pre-empt it.
+
+    /candidate-work is world-writable, so a predictable name here was an opening:
+    a submission could plant the next `run-N` as a symlink to the sealed fixtures
+    and wait. The root-side mkdir(exist_ok=True) would succeed through the link
+    and the chmod would follow it, since os.chmod resolves symlinks and Linux has
+    no lchmod. mkdtemp closes both halves -- the name is unpredictable and the
+    directory is created fresh or not at all.
+    """
+    directory = Path(tempfile.mkdtemp(prefix=f"run-{next(_run_ctr)}-", dir=str(_CWORK)))
+    assert not directory.is_symlink(), directory
     os.chmod(directory, 0o777)
     return directory
 
 
-def _run_agent(argv, cwd: Path):
-    """Run the submitted program under the unprivileged candidate UID with a scrubbed environment."""
-    return subprocess.run(
-        _SETPRIV + argv, check=True, capture_output=True, text=True, cwd=str(cwd),
-        env=dict(_CANDIDATE_ENV), timeout=_CANDIDATE_TIMEOUT,
-    )
+def _reap_group(pgid: int) -> None:
+    """Kill and reap everything left in the candidate's process group.
+
+    start_new_session makes the submitted program a session and group leader, so
+    its pgid equals its pid and everything it spawns shares that group. The id is
+    taken before the wait: once the direct child has been reaped its pgid can no
+    longer be looked up, and a leaked grandchild would otherwise survive to keep
+    writing while the outputs are being graded.
+    """
+    try:
+        os.killpg(pgid, signal.SIGKILL)
+    except (ProcessLookupError, PermissionError, OSError):
+        return
+    for _ in range(50):
+        try:
+            os.killpg(pgid, 0)
+        except (ProcessLookupError, PermissionError, OSError):
+            return
+        time.sleep(0.02)
+
+
+def _run_agent(argv, cwd: Path, check: bool = True):
+    """Run the submitted program unprivileged, in its own process group.
+
+    Output goes to temporary files rather than pipes. A program that double-forks
+    a daemon holding the inherited pipe open would keep the read end alive and
+    hang the harness past its timeout; a file has no such reader to wait on. The
+    whole process group is killed afterwards, so nothing the run left behind is
+    still executing when its artifacts are read.
+    """
+    with tempfile.TemporaryFile(mode="w+", encoding="utf-8", errors="replace") as out, \
+            tempfile.TemporaryFile(mode="w+", encoding="utf-8", errors="replace") as err:
+        proc = subprocess.Popen(
+            _SETPRIV + argv, cwd=str(cwd), env=dict(_CANDIDATE_ENV),
+            stdout=out, stderr=err, start_new_session=True,
+        )
+        pgid = proc.pid          # session leader: pgid == pid, captured before the wait
+        try:
+            proc.wait(timeout=_CANDIDATE_TIMEOUT)
+        except subprocess.TimeoutExpired:
+            _reap_group(pgid)
+            proc.wait()
+            raise
+        finally:
+            _reap_group(pgid)
+        out.seek(0)
+        err.seek(0)
+        result = subprocess.CompletedProcess(argv, proc.returncode, out.read(), err.read())
+    if check and result.returncode != 0:
+        raise subprocess.CalledProcessError(
+            result.returncode, argv, result.stdout, result.stderr)
+    return result
 
 
 def _run_pipeline(tmp_path: Path, script_path: Path = WORKFLOW_PATH, input_path: Path = DEFAULT_INPUT):
@@ -487,10 +545,7 @@ def test_submitted_program_runs_unprivileged(tmp_path: Path):
     probe = _candidate_dir() / "probe.py"
     probe.write_text("import os\nprint(os.getuid())\n", encoding="utf-8")
     os.chmod(probe, 0o644)
-    res = subprocess.run(
-        _SETPRIV + [sys.executable, str(probe)],
-        capture_output=True, text=True, cwd=str(_CWORK), check=False,
-    )
+    res = _run_agent([sys.executable, str(probe)], cwd=_CWORK, check=False)
     assert res.returncode == 0, res.stderr
     assert res.stdout.strip() == "65534", "submitted program must run as uid 65534"
 
@@ -989,22 +1044,53 @@ def test_the_standard_library_check_catches_a_third_party_import(tmp_path: Path)
     assert {name for name in found if name not in sys.stdlib_module_names} == {"pandas", "numpy"}
 
 
-def test_biller_does_not_load_modules_dynamically():
-    """A module loaded at run time is not an import the scan above can see.
+def _dynamic_loading_offences(source: str, forbidden: set) -> set:
+    """Names in `source` that reach a module or a body of code at run time.
 
-    importlib, __import__ and the compile/eval/exec family each reach a module or
-    a body of code the parse tree never names, which would leave the standard
-    library rule enforceable only by trust.
+    Each is looked for where it would actually appear: as a bare call, or as an
+    attribute of builtins. `re.compile` is a different function that happens to
+    share a name with the builtin, and is left alone.
+    """
+    builtin_names = forbidden & {"__import__", "eval", "exec", "compile"}
+    found = set()
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+            if node.func.id in builtin_names:
+                found.add(node.func.id)
+        elif isinstance(node, ast.Attribute):
+            if node.attr == "import_module" and "import_module" in forbidden:
+                found.add("import_module")
+            elif (node.attr in builtin_names
+                  and isinstance(node.value, ast.Name)
+                  and node.value.id.endswith("builtins")):
+                found.add(node.attr)
+    return found
+
+
+def test_biller_does_not_load_modules_dynamically():
+    """A module loaded at run time is not an import the import scan can see.
+
+    The contract names what may not be reached that way: importlib and its
+    import_module reach a module the parse tree never names, and __import__,
+    eval, exec and compile reach one, or a body of code, the same way.
     """
     source = WORKFLOW_PATH.read_text(encoding="utf-8")
-    assert "importlib" not in _imported_roots(source), "the biller imports importlib"
-    called = {node.func.id for node in ast.walk(ast.parse(source))
-              if isinstance(node, ast.Call) and isinstance(node.func, ast.Name)}
-    attributes = {node.attr for node in ast.walk(ast.parse(source))
-                  if isinstance(node, ast.Attribute)}
-    banned = {"__import__", "eval", "exec", "compile"}
-    assert not (banned & called), f"the biller loads code at run time: {sorted(banned & called)}"
-    assert "import_module" not in attributes, "the biller loads a module at run time"
+    forbidden = set(SPEC["workflow_repair"]["prohibited_dynamic_loading"])
+    if "importlib" in forbidden:
+        assert "importlib" not in _imported_roots(source), "the biller imports importlib"
+    offences = _dynamic_loading_offences(source, forbidden)
+    assert not offences, f"the biller loads code at run time: {sorted(offences)}"
+
+
+def test_the_dynamic_loading_check_catches_the_spellings_that_matter():
+    """Negative control, including proof it does not fire on an ordinary re.compile."""
+    forbidden = set(SPEC["workflow_repair"]["prohibited_dynamic_loading"])
+    assert {"importlib", "import_module", "eval", "exec", "compile", "__import__"} <= forbidden
+    assert _dynamic_loading_offences(
+        "import importlib\nimportlib.import_module('decimal')\n", forbidden) == {"import_module"}
+    assert _dynamic_loading_offences("import builtins\nbuiltins.eval('1')\n", forbidden) == {"eval"}
+    assert _dynamic_loading_offences("rate = eval(text)\n", forbidden) == {"eval"}
+    assert _dynamic_loading_offences("import re\nP = re.compile(r'x')\n", forbidden) == set()
 
 
 def test_the_dynamic_loading_check_catches_an_import_module_call(tmp_path: Path):

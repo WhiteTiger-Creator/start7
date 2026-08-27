@@ -1,8 +1,14 @@
 #!/bin/bash
 set -uo pipefail
 
+# The reward channel is closed to everything but root BEFORE any agent code runs.
+# The submitted biller is executed under uid 65534 further down, so the directory
+# it would have to reach is made unreadable and unwritable here rather than being
+# left to whatever mode the surrounding harness happens to give it.
 mkdir -p /logs/verifier
+chmod 700 /logs/verifier
 echo 0 > /logs/verifier/reward.txt
+chmod 600 /logs/verifier/reward.txt
 
 TEST_DIR="${TEST_DIR:-/tests}"
 

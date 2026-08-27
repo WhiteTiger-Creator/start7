@@ -14,7 +14,16 @@
       "fractions",
       "pandas",
       "numpy"
-    ]
+    ],
+    "prohibited_dynamic_loading": [
+      "importlib",
+      "__import__",
+      "eval",
+      "exec",
+      "compile",
+      "import_module"
+    ],
+    "import_rule": "the standard library only, none of prohibited_imports, and nothing reached at run time through prohibited_dynamic_loading: a module the parse tree never names is not an import anyone can check"
   },
   "consolidation_output": {
     "output_path": "/app/data/effective_rate_table.json",
