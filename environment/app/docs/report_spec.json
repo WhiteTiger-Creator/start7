@@ -80,15 +80,18 @@
     },
     "period_start": {
       "type": "string",
-      "format": "YYYY-MM-DD"
+      "format": "YYYY-MM-DD",
+      "format_note": "exactly YYYY-MM-DD and nothing else; the wider forms a permissive ISO parser accepts, such as a compact 20260106 or a week date 2026-W02-1, are not dates here"
     },
     "period_end": {
       "type": "string",
-      "format": "YYYY-MM-DD"
+      "format": "YYYY-MM-DD",
+      "format_note": "exactly YYYY-MM-DD and nothing else; the wider forms a permissive ISO parser accepts, such as a compact 20260106 or a week date 2026-W02-1, are not dates here"
     },
     "effective_from": {
       "type": "string",
-      "format": "YYYY-MM-DD"
+      "format": "YYYY-MM-DD",
+      "format_note": "exactly YYYY-MM-DD and nothing else; the wider forms a permissive ISO parser accepts, such as a compact 20260106 or a week date 2026-W02-1, are not dates here"
     },
     "account": {
       "type": "string"
@@ -182,7 +185,7 @@
   },
   "exception_queue": {
     "output_path": "exception_queue.jsonl",
-    "container": "one compact JSON object per line, json.dumps(..., separators=(',', ':'))",
+    "container": "one compact JSON object per line, json.dumps(..., separators=(',', ':')), each line ended by a newline including the last, and no blank line anywhere",
     "bill_id_format": "{account}:{read_id}:{period_start}",
     "required_fields": [
       "bill_id",

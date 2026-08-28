@@ -35,6 +35,12 @@
   "base_tariff_digest": "b5a76533401ba11707043a779d3ee8c9792bf6a4c190c895bd78f4a474067d9a",
   "broken_biller_sha256": "41155502cd78976950e1f2c7b4be64656a51363041592ef58aff5ef454159ae0",
   "consolidated_table_digest": "33345a0f9f66759f0db29c866d7d0f08f843b136c0c80609b8aa9f68f739d76b",
+  "input_bytes_sha256": {
+    "amendment_filings.json": "f43b3bb22c8c2a965ce2aa6729c09db61e19c07b7b93e5a34b66fde34fa1e030",
+    "base_tariff.json": "f6371695e770cf4d75ae39e03740f42c927bf76502d5bd777d2ab51b9bd6fd98",
+    "billing_policies.json": "2eed084e3b45ea11406001544f23d7e6da87bb438beacd920b4b869251fb9a7b",
+    "service_class_register.json": "f1eac40fc4d1c5e2a8a4a5ef362ad6151ad5374c5c2cd68ecc6daa9c5f6c5376"
+  },
   "primary": {
     "queue_count": 14215,
     "queue_digest": "0da461122b3a806311bd5dadca7812219f5427453645983594aced33b9adadce",

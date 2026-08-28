@@ -251,9 +251,20 @@ def _naive_last_filing_wins_table() -> dict:
 
 
 def test_consolidation_sources_are_intact():
-    """The base tariff and the amendment filings are read, not rewritten."""
-    assert _digest(_load_json(BASE_TARIFF_PATH)) == FIXTURE["base_tariff_digest"]
-    assert _digest(_load_json(AMENDMENT_PATH)) == FIXTURE["amendment_filings_digest"]
+    """Every input instruction.md says comes back byte for byte is checked on its bytes.
+
+    The filed sources were compared on their parsed content and the register and
+    the policy were not checked at all, so a run that reformatted one, or eased
+    its own job by editing a policy value and a fixture together, was caught only
+    indirectly if at all.
+    """
+    live = {name: hashlib.sha256(path.read_bytes()).hexdigest() for name, path in (
+        ("base_tariff.json", BASE_TARIFF_PATH),
+        ("amendment_filings.json", AMENDMENT_PATH),
+        ("service_class_register.json", REGISTER_PATH),
+        ("billing_policies.json", POLICY_PATH),
+    )}
+    assert live == FIXTURE["input_bytes_sha256"]
 
 
 def test_rate_table_consolidated():
