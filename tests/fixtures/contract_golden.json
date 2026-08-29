@@ -282,5 +282,7 @@
   "policy_source": {
     "path": "/app/data/billing_policies.json",
     "shape": "{\"default\": {field: int, ...}, \"class_overrides\": {service_class: {field: int, ...}, ...}}"
-  }
+  },
+  "runtime_budget_seconds": 900,
+  "runtime_budget_note": "a ceiling on one run of the biller, enforced as a hard kill rather than measured as a timing target: the run is given the whole budget and is only stopped if it hangs past it"
 }

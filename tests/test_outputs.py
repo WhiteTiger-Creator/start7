@@ -118,7 +118,9 @@ _CANDIDATE_ENV = {"PATH": "/usr/local/bin:/usr/bin:/bin", "HOME": "/candidate-wo
 # exists to kill a hang rather than to time anything. It was 300, which the
 # shipped biller came within 75 seconds of on the full read set and hit once;
 # that control now runs on a slice, and the cap has room besides.
-_CANDIDATE_TIMEOUT = 900
+# Read from the contract rather than written twice, so the figure the agent can
+# look up and the figure in force here cannot drift apart.
+_CANDIDATE_TIMEOUT = int(SPEC["runtime_budget_seconds"])
 
 
 def _candidate_dir() -> Path:
@@ -1216,6 +1218,18 @@ def test_biller_does_not_reference_test_artifacts():
                 if isinstance(node, ast.Constant) and isinstance(node.value, str)]
     for token in ("/tests", "expected_report.json", "alt_meter_reads.json"):
         assert not any(token in literal for literal in literals), token
+
+
+def test_the_runtime_budget_is_stated_in_the_contract():
+    """The ceiling the verifier enforces is one the agent can read.
+
+    A hard kill was in force with nothing in the environment naming it, so a
+    submission had no way to know what it was being held to.
+    """
+    budget = SPEC["runtime_budget_seconds"]
+    assert isinstance(budget, int) and not isinstance(budget, bool)
+    assert budget > 0
+    assert budget == _CANDIDATE_TIMEOUT
 
 
 def test_shipped_contract_matches_the_golden_copy():
