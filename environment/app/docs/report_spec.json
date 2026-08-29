@@ -81,17 +81,17 @@
     "period_start": {
       "type": "string",
       "format": "YYYY-MM-DD",
-      "format_note": "exactly YYYY-MM-DD and nothing else; the wider forms a permissive ISO parser accepts, such as a compact 20260106 or a week date 2026-W02-1, are not dates here"
+      "format_note": "exactly YYYY-MM-DD and nothing else. The wider forms a permissive ISO parser accepts, such as a compact 20260106 or a week date 2026-W02-1, are not dates here, and neither is a value carrying leading or trailing whitespace: the #TAR-7301 coercions do not name the period dates, so nothing is trimmed before the form is read."
     },
     "period_end": {
       "type": "string",
       "format": "YYYY-MM-DD",
-      "format_note": "exactly YYYY-MM-DD and nothing else; the wider forms a permissive ISO parser accepts, such as a compact 20260106 or a week date 2026-W02-1, are not dates here"
+      "format_note": "exactly YYYY-MM-DD and nothing else. The wider forms a permissive ISO parser accepts, such as a compact 20260106 or a week date 2026-W02-1, are not dates here, and neither is a value carrying leading or trailing whitespace: the #TAR-7301 coercions do not name the period dates, so nothing is trimmed before the form is read."
     },
     "effective_from": {
       "type": "string",
       "format": "YYYY-MM-DD",
-      "format_note": "exactly YYYY-MM-DD and nothing else; the wider forms a permissive ISO parser accepts, such as a compact 20260106 or a week date 2026-W02-1, are not dates here"
+      "format_note": "exactly YYYY-MM-DD and nothing else. The wider forms a permissive ISO parser accepts, such as a compact 20260106 or a week date 2026-W02-1, are not dates here, and neither is a value carrying leading or trailing whitespace: the #TAR-7301 coercions do not name the period dates, so nothing is trimmed before the form is read."
     },
     "account": {
       "type": "string"

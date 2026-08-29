@@ -110,7 +110,13 @@ def coerce_date(value: object) -> date | None:
     # report_spec.json gives one format, YYYY-MM-DD. date.fromisoformat also
     # accepts the compact "20260106" and the week form "2026-W02-1", which the
     # contract does not name, so they are not dates here.
-    text = str(value).strip()
+    #
+    # No strip() either: #TAR-7301 names the coercions for account, service_class,
+    # read_id, note, consumption_kwh, peak_demand_kw and pinned, and pointedly not
+    # for the period dates, which the contract carries in exactly one form. A value
+    # padded with spaces is not in that form, so it is not a date, and trimming it
+    # here would have admitted a read the stated rule refuses.
+    text = str(value)
     if not _DATE_RE.match(text):
         return None
     try:

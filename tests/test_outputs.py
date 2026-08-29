@@ -114,7 +114,11 @@ _SETPRIV = ["setpriv", "--reuid=65534", "--regid=65534", "--clear-groups", "--no
 # The submitted program gets a minimal explicit environment rather than inheriting the verifier's
 # (PATH/PYTHONPATH/CI variables and any other grader context).
 _CANDIDATE_ENV = {"PATH": "/usr/local/bin:/usr/bin:/bin", "HOME": "/candidate-work", "LANG": "C.UTF-8"}
-_CANDIDATE_TIMEOUT = 300
+# Generous: the graded engine finishes in a couple of seconds, and this cap
+# exists to kill a hang rather than to time anything. It was 300, which the
+# shipped biller came within 75 seconds of on the full read set and hit once;
+# that control now runs on a slice, and the cap has room besides.
+_CANDIDATE_TIMEOUT = 900
 
 
 def _candidate_dir() -> Path:
@@ -521,14 +525,47 @@ def test_original_snapshot_preserved():
     assert digest == FIXTURE["broken_biller_sha256"]
 
 
+def _account_aligned_slice(tmp_path: Path, accounts: int = 300) -> Path:
+    """The reads of the first N accounts, whole.
+
+    The biller aggregates per account, so a slice cut mid-account would compare
+    two runs over different halves of the same bill. Taking whole accounts keeps
+    every bill in the slice a complete one.
+    """
+    reads = _load_json(DEFAULT_INPUT)
+    keep = set(sorted({read["account"] for read in reads})[:accounts])
+    sliced = [read for read in reads if read["account"] in keep]
+    assert sliced, "the slice is empty"
+    path = tmp_path / "slice.json"
+    path.write_text(json.dumps(sliced), encoding="utf-8")
+    os.chmod(path, 0o644)
+    return path
+
+
 def test_broken_snapshot_is_wrong(tmp_path: Path):
-    """The shipped biller does not already produce the governed result."""
-    _, broken_summary, broken_register, broken_queue = _run_pipeline(
-        tmp_path, script_path=ORIGINAL_WORKFLOW_PATH
+    """The shipped biller does not already produce the governed result.
+
+    Both engines are run over the same slice of whole accounts rather than the
+    full read set. The shipped biller is slow enough on all 60,880 reads to come
+    within sight of the candidate timeout -- it was measured between 173 and 225
+    seconds against a 300-second cap, and it hit the cap once -- so a valid trial
+    could fail on the clock alone. The slice runs it in about a tenth of that,
+    and comparing the two engines on the same input is the stronger statement
+    anyway: it fails a submission that simply left the shipped biller in place,
+    which inequality against a sealed fixture only reached indirectly.
+    """
+    sliced = _account_aligned_slice(tmp_path)
+    _, mine_summary, mine_register, mine_queue = _run_pipeline(
+        tmp_path / "submitted", input_path=sliced
     )
-    assert broken_summary != FIXTURE["primary"]["summary"]
-    assert _digest(broken_register) != FIXTURE["primary"]["register_digest"]
-    assert _digest(broken_queue) != FIXTURE["primary"]["queue_digest"]
+    _, broken_summary, broken_register, broken_queue = _run_pipeline(
+        tmp_path / "shipped", script_path=ORIGINAL_WORKFLOW_PATH, input_path=sliced
+    )
+    assert broken_summary != mine_summary, (
+        "the shipped biller already produces the submitted result, so either it was "
+        "left in place or the repair changed nothing")
+    assert _digest(broken_register) != _digest(mine_register)
+    assert _digest(broken_queue) != _digest(mine_queue)
 
 
 # --------------------------------------------------------------------------
