@@ -2,9 +2,19 @@ FROM public.ecr.aws/docker/library/python:3.13-slim-bookworm@sha256:01f42367a0a9
 
 # Verifier dependencies, baked in (no network at trial time). Grading uses the
 # stdlib only (json/hashlib/ast/subprocess/datetime) plus pytest.
-RUN pip install --no-cache-dir \
-        pytest==8.4.1 \
-        pytest-json-ctrf==0.3.5
+RUN set -eu; \
+    delay=5; \
+    for attempt in 1 2 3 4; do \
+        if pip install --no-cache-dir --timeout 30 --retries 3 \
+                pytest==8.4.1 \
+                pytest-json-ctrf==0.3.5; then \
+            exit 0; \
+        fi; \
+        echo "pip attempt ${attempt} failed, retrying in ${delay}s" >&2; \
+        sleep "${delay}"; \
+        delay=$((delay * 2)); \
+    done; \
+    exit 1
 
 # Landing directory for the declared artifact (/app) collected from the agent's
 # environment. Its parent must exist in the verifier image before the copy.
@@ -18,12 +28,16 @@ RUN mkdir -p /candidate-work \
     && chmod 1777 /candidate-work
 
 WORKDIR /tests
-COPY test_outputs.py /tests/test_outputs.py
-COPY test.sh /tests/test.sh
-COPY fixtures/ /tests/fixtures/
+# The whole verifier tree, so nothing is left out of the image by a COPY line
+# nobody remembered to add.
+COPY . /tests/
 
 # Keep the held-out fixtures readable only by root, so the unprivileged candidate cannot read
 # expected outputs even though it can be handed staged inputs. Closing the two
 # directories is enough: without search permission on them nothing below can be
 # reached by another uid, so no recursive mode change is needed.
-RUN chmod 700 /tests /tests/fixtures
+# COPY lands everything 0644, so the modes are set here rather than assumed:
+# go-rwx across the tree leaves the sealed fixtures and the suite itself
+# unreadable to any uid but root, which is the one pytest runs as.
+RUN chmod -R go-rwx /tests \
+    && chmod 700 /tests /tests/fixtures
