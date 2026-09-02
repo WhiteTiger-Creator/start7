@@ -354,6 +354,11 @@ def test_consolidation_sources_are_intact():
         ("amendment_filings.json", AMENDMENT_PATH),
         ("service_class_register.json", REGISTER_PATH),
         ("billing_policies.json", POLICY_PATH),
+        # instruction.md names the contract among the files that come back byte
+        # for byte unchanged. The golden comparison elsewhere is satisfied by any
+        # file that merely parses the same, so a re-dump at a different indent or
+        # key order passed everything while breaking the stated promise.
+        ("report_spec.json", SPEC_PATH),
     )}
     assert live == FIXTURE["input_bytes_sha256"]
 
@@ -1157,44 +1162,6 @@ def test_minimum_bill_prorates_half_up_not_by_float_rounding(tmp_path: Path):
     finally:
         RATE_TABLE_PATH.write_text(table_original, encoding="utf-8")
         POLICY_PATH.write_text(policy_original, encoding="utf-8")
-
-
-# --------------------------------------------------------------------------
-# Anti-delegation: integer minor units only
-# --------------------------------------------------------------------------
-def _imported_roots(source: str) -> set:
-    """Top-level module names the source imports, read from the parse tree."""
-    roots = set()
-    for node in ast.walk(ast.parse(source)):
-        if isinstance(node, ast.Import):
-            for alias in node.names:
-                roots.add(alias.name.split(".")[0])
-        elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
-            roots.add(node.module.split(".")[0])
-    return roots
-
-
-def test_the_standard_library_check_catches_a_third_party_import(tmp_path: Path):
-    """The check above is real: an engine reaching for a package is detected."""
-    shim = tmp_path / "vendored_engine.py"
-    shim.write_text("import json\nimport pandas as pd\nfrom numpy import array\n")
-    found = _imported_roots(shim.read_text())
-    assert {"pandas", "numpy"} <= found
-    assert {name for name in found if name not in sys.stdlib_module_names} == {"pandas", "numpy"}
-
-
-def test_ast_check_catches_decimal_importing_engine(tmp_path: Path):
-    """The import ban is real: a decimal-importing engine is detected."""
-    shim = tmp_path / "delegating_engine.py"
-    shim.write_text("import decimal\n\n\ndef rate(a, b):\n    return decimal.Decimal(a) / b\n")
-    tree = ast.parse(shim.read_text())
-    imported = {
-        alias.name.split(".")[0]
-        for node in ast.walk(tree)
-        if isinstance(node, ast.Import)
-        for alias in node.names
-    }
-    assert "decimal" in imported
 
 
 # --------------------------------------------------------------------------
