@@ -33,11 +33,8 @@ WORKDIR /tests
 COPY . /tests/
 
 # Keep the held-out fixtures readable only by root, so the unprivileged candidate cannot read
-# expected outputs even though it can be handed staged inputs. Closing the two
+# expected outputs even though it can be handed staged inputs. COPY lands
+# everything 0644, so the modes are set here rather than assumed. Closing the two
 # directories is enough: without search permission on them nothing below can be
 # reached by another uid, so no recursive mode change is needed.
-# COPY lands everything 0644, so the modes are set here rather than assumed:
-# go-rwx across the tree leaves the sealed fixtures and the suite itself
-# unreadable to any uid but root, which is the one pytest runs as.
-RUN chmod -R go-rwx /tests \
-    && chmod 700 /tests /tests/fixtures
+RUN chmod 700 /tests /tests/fixtures
